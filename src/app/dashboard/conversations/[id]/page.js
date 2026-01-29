@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { use, useEffect, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,84 +14,120 @@ export default function ConversationDetailPage({ params }) {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+  const lastCheckRef = useRef({
+    messages: Date.now(),
+    conversations: Date.now(),
+    customers: Date.now()
+  })
+
+  // Webhook polling
+  const checkWebhooks = useCallback(async () => {
+    if (!resolvedParams?.id) return
+
+    try {
+      const tables = ['messages', 'conversations', 'customers']
+      
+      for (const table of tables) {
+        const response = await fetch(
+          `/api/webhook?table=${table}&since=${lastCheckRef.current[table]}`
+        )
+        
+        if (response.ok) {
+          const data = await response.json()
+          
+          if (data.hasChanges) {
+            console.log(`🔄 Webhook - ${table} foi modificado`)
+            lastCheckRef.current[table] = Date.now()
+            
+            if (table === 'messages') {
+              await loadMessages()
+            } else if (table === 'conversations') {
+              await loadConversation()
+            } else if (table === 'customers' && customer?.id) {
+              await loadCustomer(customer.id)
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao checar webhooks:', error)
+    }
+  }, [resolvedParams?.id, customer?.id])
 
   useEffect(() => {
     if (resolvedParams?.id) {
       loadConversationDetails()
       
-      // Real-time subscriptions
-      const conversationId = resolvedParams?.id
+      // Polling para webhooks a cada 2 segundos
+      const interval = setInterval(checkWebhooks, 2000)
       
-      const messagesChannel = supabase
-        .channel(`messages:${conversationId}`)
-        .on('postgres_changes',
-          { 
-            event: 'INSERT', 
-            schema: 'public', 
-            table: 'messages',
-            filter: `conversation_id=eq.${conversationId}`
-          },
-          (payload) => {
-            console.log('🔄 Realtime - Nova mensagem:', payload)
-            setMessages(prev => [...prev, payload.new])
-          }
-        )
-        .on('postgres_changes',
-          { 
-            event: 'UPDATE', 
-            schema: 'public', 
-            table: 'messages',
-            filter: `conversation_id=eq.${conversationId}`
-          },
-          (payload) => {
-            console.log('🔄 Realtime - Mensagem atualizada:', payload)
-            setMessages(prev => prev.map(msg => 
-              msg.id === payload.new.id ? payload.new : msg
-            ))
-          }
-        )
-        .on('postgres_changes',
-          { 
-            event: 'DELETE', 
-            schema: 'public', 
-            table: 'messages',
-            filter: `conversation_id=eq.${conversationId}`
-          },
-          (payload) => {
-            console.log('🔄 Realtime - Mensagem removida:', payload)
-            setMessages(prev => prev.filter(msg => msg.id !== payload.old.id))
-          }
-        )
-        .subscribe((status) => {
-          console.log('📡 Status da conexão (messages):', status)
-        })
-
-      const conversationChannel = supabase
-        .channel(`conversation:${conversationId}`)
-        .on('postgres_changes',
-          { 
-            event: '*', 
-            schema: 'public', 
-            table: 'conversations',
-            filter: `id=eq.${conversationId}`
-          },
-          (payload) => {
-            console.log('🔄 Realtime - Conversa atualizada:', payload)
-            if (payload.eventType === 'UPDATE') {
-              setConversation(payload.new)
-            }
-          }
-        )
-        .subscribe((status) => {
-          console.log('📡 Status da conexão (conversation detail):', status)
-        })
-
       return () => {
-        supabase.removeChannel(messagesChannel)
-        supabase.removeChannel(conversationChannel)
+        clearInterval(interval)
       }
     }
-  }, [resolvedParams?.id])
+  }, [resolvedParams?.id, checkWebhooks])
+
+  const loadConversation = async () => {
+    try {
+      const conversationId = resolvedParams?.id
+      const { data: convData, error: convError } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('id', conversationId)
+        .single()
+
+      if (convError) {
+        console.error('Erro ao carregar conversa:', convError)
+        return
+      }
+
+      console.log('Conversa recarregada:', convData)
+      setConversation(convData)
+    } catch (err) {
+      console.error('Erro ao recarregar conversa:', err)
+    }
+  }
+
+  const loadCustomer = async (customerId) => {
+    try {
+      const { data: customerData, error: custError } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('id', customerId)
+        .single()
+
+      if (custError) {
+        console.error('Erro ao carregar cliente:', custError)
+        return
+      }
+
+      console.log('Cliente recarregado:', customerData)
+      setCustomer(customerData)
+    } catch (err) {
+      console.error('Erro ao recarregar cliente:', err)
+    }
+  }
+
+  const loadMessages = async () => {
+    try {
+      const conversationId = resolvedParams?.id
+      const { data: messagesData, error: messagesError } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true })
+
+      if (messagesError) {
+        console.error('Erro ao carregar mensagens:', messagesError)
+        return
+      }
+
+      console.log('Mensagens recarregadas:', messagesData)
+      setMessages(messagesData || [])
+    } catch (err) {
+      console.error('Erro ao recarregar mensagens:', err)
+    }
+  }
 
   const loadConversationDetails = async () => {
     try {
@@ -126,41 +162,10 @@ export default function ConversationDetailPage({ params }) {
       } else {
         console.log('Cliente carregado:', customerData)
         setCustomer(customerData)
-        
-        // Subscribe to customer updates
-        const customerChannel = supabase
-          .channel(`customer:${convData.customer_id}`)
-          .on('postgres_changes',
-            { 
-              event: '*', 
-              schema: 'public', 
-              table: 'customers',
-              filter: `id=eq.${convData.customer_id}`
-            },
-            (payload) => {
-              if (payload.eventType === 'UPDATE') {
-                setCustomer(payload.new)
-              }
-            }
-          )
-          .subscribe()
       }
 
       // Busca mensagens
-      const { data: messagesData, error: messagesError } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('conversation_id', conversationId)
-        .order('created_at', { ascending: true })
-
-      if (messagesError) {
-        console.error('Erro ao carregar mensagens:', messagesError)
-        console.error('Detalhes do erro:', messagesError.message)
-        return
-      }
-
-      console.log('Mensagens carregadas:', messagesData)
-      setMessages(messagesData || [])
+      await loadMessages()
     } catch (err) {
       console.error('Erro:', err)
     } finally {

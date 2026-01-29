@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ export default function AppointmentsPage() {
   const [dateFilter, setDateFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
+  const lastCheckRef = useRef(0)
 
   const loadAppointments = useCallback(async () => {
     try {
@@ -36,27 +37,32 @@ export default function AppointmentsPage() {
     }
   }, [supabase])
 
+  const checkWebhook = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/webhook?table=appointments&since=${lastCheckRef.current}`)
+      const data = await response.json()
+      
+      if (data.hasChanges) {
+        console.log('🔔 Webhook - Agendamento atualizado')
+        lastCheckRef.current = data.timestamp
+        loadAppointments()
+      }
+    } catch (error) {
+      console.error('Erro ao verificar webhook:', error)
+    }
+  }, [loadAppointments])
+
   useEffect(() => {
     loadAppointments()
 
-    // Real-time subscription
-    const channel = supabase
-      .channel('appointments_updates')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'appointments' },
-        (payload) => {
-          console.log('🔄 Realtime - Agendamento atualizado:', payload)
-          loadAppointments()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (appointments):', status)
-      })
+    // Webhook polling a cada 2 segundos
+    console.log('🔔 Webhook ativado para appointments')
+    const interval = setInterval(checkWebhook, 2000)
 
     return () => {
-      supabase.removeChannel(channel)
+      clearInterval(interval)
     }
-  }, [loadAppointments, supabase])
+  }, [loadAppointments, checkWebhook])
 
   useEffect(() => {
     let filtered = [...items]

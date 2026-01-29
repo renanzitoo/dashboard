@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -17,6 +17,7 @@ export default function DashboardPage() {
   })
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
+  const lastCheckRef = useRef({ appointments: 0, customers: 0, conversations: 0 })
 
   const loadStats = useCallback(async () => {
     try {
@@ -70,55 +71,42 @@ export default function DashboardPage() {
     }
   }, [supabase])
 
+  const checkWebhooks = useCallback(async () => {
+    try {
+      const tables = ['appointments', 'customers', 'conversations']
+      let hasChanges = false
+      
+      for (const table of tables) {
+        const response = await fetch(`/api/webhook?table=${table}&since=${lastCheckRef.current[table]}`)
+        const data = await response.json()
+        
+        if (data.hasChanges) {
+          console.log('🔔 Webhook - Mudança detectada em', table)
+          lastCheckRef.current[table] = data.timestamp
+          hasChanges = true
+        }
+      }
+      
+      if (hasChanges) {
+        loadStats()
+      }
+    } catch (error) {
+      console.error('Erro ao verificar webhooks:', error)
+    }
+  }, [loadStats])
+
   useEffect(() => {
     loadStats()
     
-    // Real-time subscriptions for all tables
-    const appointmentsChannel = supabase
-      .channel('appointments_changes')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'appointments' }, 
-        (payload) => {
-          console.log('🔄 Realtime - Agendamento atualizado (dashboard):', payload)
-          loadStats()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (appointments - dashboard):', status)
-      })
-
-    const customersChannel = supabase
-      .channel('customers_changes')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'customers' }, 
-        (payload) => {
-          console.log('🔄 Realtime - Cliente atualizado (dashboard):', payload)
-          loadStats()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (customers - dashboard):', status)
-      })
-
-    const conversationsChannel = supabase
-      .channel('conversations_changes')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'conversations' }, 
-        (payload) => {
-          console.log('🔄 Realtime - Conversa atualizada (dashboard):', payload)
-          loadStats()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (conversations - dashboard):', status)
-      })
+    // Verifica webhooks a cada 2 segundos
+    console.log('🔔 Sistema de webhooks ativado')
+    const interval = setInterval(checkWebhooks, 2000)
 
     return () => {
-      supabase.removeChannel(appointmentsChannel)
-      supabase.removeChannel(customersChannel)
-      supabase.removeChannel(conversationsChannel)
+      clearInterval(interval)
+      console.log('⏸️ Sistema de webhooks parado')
     }
-  }, [loadStats, supabase])
+  }, [loadStats, checkWebhooks])
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat('pt-BR').format(num)

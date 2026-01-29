@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Mail, Phone, User } from 'lucide-react'
@@ -9,6 +9,7 @@ export default function CustomersPage() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
+  const lastCheckRef = useRef(0)
 
   const loadCustomers = useCallback(async () => {
     try {
@@ -32,27 +33,32 @@ export default function CustomersPage() {
     }
   }, [supabase])
 
+  const checkWebhook = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/webhook?table=customers&since=${lastCheckRef.current}`)
+      const data = await response.json()
+      
+      if (data.hasChanges) {
+        console.log('🔔 Webhook - Cliente atualizado')
+        lastCheckRef.current = data.timestamp
+        loadCustomers()
+      }
+    } catch (error) {
+      console.error('Erro ao verificar webhook:', error)
+    }
+  }, [loadCustomers])
+
   useEffect(() => {
     loadCustomers()
 
-    // Real-time subscription
-    const channel = supabase
-      .channel('customers_updates')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'customers' },
-        (payload) => {
-          console.log('🔄 Realtime - Cliente atualizado:', payload)
-          loadCustomers()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (customers):', status)
-      })
+    // Webhook polling a cada 2 segundos
+    console.log('🔔 Webhook ativado para customers')
+    const interval = setInterval(checkWebhook, 2000)
 
     return () => {
-      supabase.removeChannel(channel)
+      clearInterval(interval)
     }
-  }, [loadCustomers, supabase])
+  }, [loadCustomers, checkWebhook])
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('pt-BR', {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Card, CardContent } from '@/components/ui/card'
@@ -11,6 +11,7 @@ export default function ConversationsPage() {
   const [customers, setCustomers] = useState({})
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
+  const lastCheckRef = useRef({ conversations: 0, customers: 0 })
 
   const loadConversations = useCallback(async () => {
     try {
@@ -54,41 +55,41 @@ export default function ConversationsPage() {
     }
   }, [supabase])
 
+  const checkWebhooks = useCallback(async () => {
+    try {
+      const tables = ['conversations', 'customers']
+      let hasChanges = false
+      
+      for (const table of tables) {
+        const response = await fetch(`/api/webhook?table=${table}&since=${lastCheckRef.current[table]}`)
+        const data = await response.json()
+        
+        if (data.hasChanges) {
+          console.log('🔔 Webhook - Mudança em', table)
+          lastCheckRef.current[table] = data.timestamp
+          hasChanges = true
+        }
+      }
+      
+      if (hasChanges) {
+        loadConversations()
+      }
+    } catch (error) {
+      console.error('Erro ao verificar webhooks:', error)
+    }
+  }, [loadConversations])
+
   useEffect(() => {
     loadConversations()
 
-    // Real-time subscriptions
-    const conversationsChannel = supabase
-      .channel('conversations_updates')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'conversations' },
-        (payload) => {
-          console.log('🔄 Realtime - Conversa atualizada:', payload)
-          loadConversations()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (conversations):', status)
-      })
-
-    const customersChannel = supabase
-      .channel('customers_updates_conv')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'customers' },
-        (payload) => {
-          console.log('🔄 Realtime - Cliente atualizado:', payload)
-          loadConversations()
-        }
-      )
-      .subscribe((status) => {
-        console.log('📡 Status da conexão (customers):', status)
-      })
+    // Webhook polling a cada 2 segundos
+    console.log('🔔 Webhook ativado para conversations')
+    const interval = setInterval(checkWebhooks, 2000)
 
     return () => {
-      supabase.removeChannel(conversationsChannel)
-      supabase.removeChannel(customersChannel)
+      clearInterval(interval)
     }
-  }, [loadConversations, supabase])
+  }, [loadConversations, checkWebhooks])
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('pt-BR', {

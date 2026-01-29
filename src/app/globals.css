@@ -1,54 +1,64 @@
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 15%;
+  --background: 206 60% 97%;
+  --foreground: 210 45% 10%;
   --card: 0 0% 100%;
-  --card-foreground: 240 10% 15%;
+  --card-foreground: 210 45% 10%;
   --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 15%;
-  --primary: 240 6% 25%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 5% 96%;
-  --secondary-foreground: 240 6% 10%;
-  --muted: 240 5% 96%;
-  --muted-foreground: 240 4% 46%;
-  --accent: 240 5% 93%;
-  --accent-foreground: 240 6% 10%;
+  --popover-foreground: 210 35% 15%;
+  --primary: 206 64% 58%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 25% 45%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 206 50% 92%;
+  --muted-foreground: 210 22% 45%;
+  --accent: 199 84% 69%;
+  --accent-foreground: 210 35% 15%;
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 6% 90%;
-  --input: 240 6% 90%;
-  --ring: 240 6% 25%;
+  --border: 206 40% 88%;
+  --input: 206 40% 88%;
+  --ring: 206 64% 58%;
   --radius: 0.5rem;
-  --gradient-from: #f3f4f6;
-  --gradient-via: #e2e8f0;
-  --gradient-to: #e4e4e7;
+  --gradient-from: #D5E5F2;
+  --gradient-via: #72C1F2;
+  --gradient-to: #4E98D9;
+  --color-blue-primary: #4E98D9;
+  --color-blue-secondary: #566D8C;
+  --color-cyan-light: #72C1F2;
+  --color-cyan-bright: #79D0F2;
+  --color-blue-lightest: #D5E5F2;
 }
 
 .dark {
-  --background: 240 10% 8%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 11%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 11%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 85%;
-  --primary-foreground: 240 10% 8%;
-  --secondary: 240 10% 15%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 10% 15%;
-  --muted-foreground: 240 5% 65%;
-  --accent: 240 10% 18%;
-  --accent-foreground: 0 0% 98%;
+  --background: 210 35% 10%;
+  --foreground: 206 60% 95%;
+  --card: 210 32% 14%;
+  --card-foreground: 206 60% 95%;
+  --popover: 210 32% 14%;
+  --popover-foreground: 206 60% 95%;
+  --primary: 199 84% 69%;
+  --primary-foreground: 210 35% 10%;
+  --secondary: 210 25% 45%;
+  --secondary-foreground: 206 60% 95%;
+  --muted: 210 28% 20%;
+  --muted-foreground: 206 35% 65%;
+  --accent: 206 64% 58%;
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 62% 45%;
   --destructive-foreground: 0 0% 98%;
-  --border: 240 10% 18%;
-  --input: 240 10% 18%;
-  --ring: 0 0% 70%;
-  --gradient-from: #0f172a;
-  --gradient-via: #1e293b;
-  --gradient-to: #27272a;
+  --border: 210 28% 22%;
+  --input: 210 28% 22%;
+  --ring: 199 84% 69%;
+  --gradient-from: #1a2332;
+  --gradient-via: #2a3f5f;
+  --gradient-to: #3d5a80;
+  --color-blue-primary: #72C1F2;
+  --color-blue-secondary: #566D8C;
+  --color-cyan-light: #79D0F2;
+  --color-cyan-bright: #72C1F2;
+  --color-blue-lightest: #4E98D9;
 }
 
 @theme inline {
@@ -82,7 +92,7 @@ body {
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    background: linear-gradient(135deg, #4E98D9 0%, #566D8C 100%);
   }
   
   .gradient-success {
@@ -94,15 +104,15 @@ body {
   }
   
   .gradient-info {
-    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+    background: linear-gradient(135deg, #72C1F2 0%, #79D0F2 100%);
   }
 
   .gradient-bg {
-    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 50%, #4b5563 100%);
+    background: linear-gradient(135deg, #D5E5F2 0%, #72C1F2 50%, #4E98D9 100%);
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    background: linear-gradient(135deg, #4E98D9 0%, #566D8C 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

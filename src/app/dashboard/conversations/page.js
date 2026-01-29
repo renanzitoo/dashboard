@@ -22,12 +22,9 @@ export default function ConversationsPage() {
         .order('started_at', { ascending: false })
 
       if (convError) {
-        console.error('Erro ao carregar conversas:', convError)
-        console.error('Detalhes do erro:', convError.message)
         return
       }
 
-      console.log('Conversas carregadas:', conversationsData)
       setConversations(conversationsData || [])
 
       // Busca todos os clientes
@@ -36,7 +33,6 @@ export default function ConversationsPage() {
         .select('*')
 
       if (custError) {
-        console.error('Erro ao carregar clientes:', custError)
         return
       }
 
@@ -46,10 +42,8 @@ export default function ConversationsPage() {
         customersMap[customer.id] = customer
       })
 
-      console.log('Clientes carregados:', customersMap)
       setCustomers(customersMap)
     } catch (err) {
-      console.error('Erro:', err)
     } finally {
       setLoading(false)
     }
@@ -65,7 +59,6 @@ export default function ConversationsPage() {
         const data = await response.json()
         
         if (data.hasChanges) {
-          console.log('🔔 Webhook - Mudança em', table)
           lastCheckRef.current[table] = data.timestamp
           hasChanges = true
         }
@@ -75,7 +68,6 @@ export default function ConversationsPage() {
         loadConversations()
       }
     } catch (error) {
-      console.error('Erro ao verificar webhooks:', error)
     }
   }, [loadConversations])
 
@@ -83,7 +75,6 @@ export default function ConversationsPage() {
     loadConversations()
 
     // Webhook polling a cada 2 segundos
-    console.log('🔔 Webhook ativado para conversations')
     const interval = setInterval(checkWebhooks, 2000)
 
     return () => {
@@ -113,7 +104,7 @@ export default function ConversationsPage() {
     <div className="min-h-screen">
       <main className="container mx-auto px-6 py-8 lg:px-8">
         <div className="mb-8">
-          <h1 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-3xl font-bold text-transparent">
+          <h1 className="text-3xl font-bold" style={{color: '#79D0F2'}}>
             Conversas
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Acompanhe todas as conversas</p>
@@ -140,12 +131,12 @@ export default function ConversationsPage() {
                   <Card className="group cursor-pointer border-0 bg-card/70 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
                     <CardContent className="flex items-center justify-between p-6">
                       <div className="flex flex-1 items-center gap-4">
-                        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-orange-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+                        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full shadow-lg transition-transform duration-300 group-hover:scale-110" style={{background: 'linear-gradient(135deg, #79D0F2, #72C1F2)'}}>
                           <MessageSquare className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                            <User className="h-4 w-4" style={{color: '#4E98D9'}} />
                             <span className="font-semibold truncate">
                               {customer?.name || 'Cliente não encontrado'}
                             </span>

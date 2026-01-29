@@ -36,7 +36,6 @@ export default function ConversationDetailPage({ params }) {
           const data = await response.json()
           
           if (data.hasChanges) {
-            console.log(`🔄 Webhook - ${table} foi modificado`)
             lastCheckRef.current[table] = Date.now()
             
             if (table === 'messages') {
@@ -50,7 +49,6 @@ export default function ConversationDetailPage({ params }) {
         }
       }
     } catch (error) {
-      console.error('Erro ao checar webhooks:', error)
     }
   }, [resolvedParams?.id, customer?.id])
 
@@ -77,14 +75,11 @@ export default function ConversationDetailPage({ params }) {
         .single()
 
       if (convError) {
-        console.error('Erro ao carregar conversa:', convError)
         return
       }
 
-      console.log('Conversa recarregada:', convData)
       setConversation(convData)
     } catch (err) {
-      console.error('Erro ao recarregar conversa:', err)
     }
   }
 
@@ -97,14 +92,11 @@ export default function ConversationDetailPage({ params }) {
         .single()
 
       if (custError) {
-        console.error('Erro ao carregar cliente:', custError)
         return
       }
 
-      console.log('Cliente recarregado:', customerData)
       setCustomer(customerData)
     } catch (err) {
-      console.error('Erro ao recarregar cliente:', err)
     }
   }
 
@@ -118,14 +110,11 @@ export default function ConversationDetailPage({ params }) {
         .order('created_at', { ascending: true })
 
       if (messagesError) {
-        console.error('Erro ao carregar mensagens:', messagesError)
         return
       }
 
-      console.log('Mensagens recarregadas:', messagesData)
       setMessages(messagesData || [])
     } catch (err) {
-      console.error('Erro ao recarregar mensagens:', err)
     }
   }
 
@@ -141,12 +130,9 @@ export default function ConversationDetailPage({ params }) {
         .single()
 
       if (convError) {
-        console.error('Erro ao carregar conversa:', convError)
-        console.error('Detalhes do erro:', convError.message)
         return
       }
 
-      console.log('Conversa carregada:', convData)
       setConversation(convData)
 
       // Busca cliente
@@ -157,17 +143,13 @@ export default function ConversationDetailPage({ params }) {
         .single()
 
       if (custError) {
-        console.error('Erro ao carregar cliente:', custError)
-        console.error('Detalhes do erro:', custError.message)
       } else {
-        console.log('Cliente carregado:', customerData)
         setCustomer(customerData)
       }
 
       // Busca mensagens
       await loadMessages()
     } catch (err) {
-      console.error('Erro:', err)
     } finally {
       setLoading(false)
     }
@@ -221,7 +203,7 @@ export default function ConversationDetailPage({ params }) {
             </Link>
           </Button>
           <div>
-            <h1 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-3xl font-bold text-transparent">
+            <h1 className="text-3xl font-bold" style={{color: '#79D0F2'}}>
               Detalhes da Conversa
             </h1>
             <p className="text-sm text-muted-foreground mt-1">Visualize e acompanhe a conversa</p>
@@ -238,7 +220,7 @@ export default function ConversationDetailPage({ params }) {
                 {customer ? (
                   <>
                     <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-600 shadow-lg">
+                      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
                         <User className="h-8 w-8 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -250,20 +232,20 @@ export default function ConversationDetailPage({ params }) {
                     <div className="space-y-3 border-t pt-5">
 
                     {customer.email && (
-                      <div className="flex items-center gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-950/30">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/50">
-                          <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <div className="flex items-center gap-3 rounded-lg p-3" style={{backgroundColor: '#E8F4FC'}}>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{backgroundColor: '#4E98D9'}}>
+                          <Mail className="h-4 w-4 text-white" />
                         </div>
-                        <span className="break-all text-sm">{customer.email}</span>
+                        <span className="break-all text-sm font-medium" style={{color: '#1e3a5f'}}>{customer.email}</span>
                       </div>
                     )}
 
                     {customer.phone && (
-                      <div className="flex items-center gap-3 rounded-lg bg-green-50 p-3 dark:bg-green-950/30">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/50">
-                          <Phone className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <div className="flex items-center gap-3 rounded-lg p-3" style={{backgroundColor: '#E8F4FC'}}>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{backgroundColor: '#72C1F2'}}>
+                          <Phone className="h-4 w-4 text-white" />
                         </div>
-                        <span className="text-sm">{customer.phone}</span>
+                        <span className="text-sm font-medium" style={{color: '#1e3a5f'}}>{customer.phone}</span>
                       </div>
                     )}
                     </div>
@@ -272,11 +254,13 @@ export default function ConversationDetailPage({ params }) {
                       <p className="text-sm font-medium text-muted-foreground">Status da Conversa</p>
                       <span className={`mt-2 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-sm ${
                         conversation.status === 'open' 
-                          ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                          ? 'text-white'
                           : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
-                      }`}>
+                      }`}
+                      style={conversation.status === 'open' ? {backgroundColor: '#10b981'} : {}}
+                      >
                         <span className={`h-2 w-2 rounded-full ${
-                          conversation.status === 'open' ? 'bg-green-500' : 'bg-gray-500'
+                          conversation.status === 'open' ? 'bg-white' : 'bg-gray-500'
                         }`}></span>
                         {conversation.status === 'open' ? 'Aberta' : 'Fechada'}
                       </span>
@@ -299,7 +283,7 @@ export default function ConversationDetailPage({ params }) {
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="border-b pb-4">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <MessageSquare className="h-5 w-5" />
+                  <MessageSquare className="h-5 w-5" style={{color: '#79D0F2'}} />
                   Mensagens ({messages.length})
                 </CardTitle>
               </CardHeader>
@@ -321,7 +305,7 @@ export default function ConversationDetailPage({ params }) {
                         }`}
                       >
                         {message.sender === 'bot' && (
-                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gray-500 to-slate-600 dark:from-gray-600 dark:to-slate-700 shadow-lg">
+                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #566D8C, #4E98D9)'}}>
                             <Bot className="h-5 w-5 text-white" />
                           </div>
                         )}
@@ -329,20 +313,22 @@ export default function ConversationDetailPage({ params }) {
                         <div
                           className={`max-w-[75%] rounded-2xl px-5 py-3 shadow-md ${
                             message.sender === 'bot'
-                              ? 'bg-gradient-to-br from-slate-700 to-gray-800 text-gray-100 dark:from-gray-800 dark:to-slate-800 dark:text-gray-100'
-                              : 'bg-gradient-to-br from-purple-600 to-blue-600 text-white shadow-lg'
+                              ? 'text-white'
+                              : 'text-white shadow-lg'
                           }`}
+                          style={message.sender === 'bot' 
+                            ? {background: 'linear-gradient(135deg, #566D8C, #4E98D9)'}
+                            : {background: 'linear-gradient(135deg, #72C1F2, #4E98D9)'}
+                          }
                         >
                           <p className="text-sm leading-relaxed">{message.content}</p>
-                          <p className={`mt-2 text-xs ${
-                            message.sender === 'bot' ? 'text-gray-300 dark:text-gray-400' : 'text-white/80'
-                          }`}>
+                          <p className="mt-2 text-xs text-white/70">
                             {formatDate(message.created_at)}
                           </p>
                         </div>
 
                         {message.sender === 'customer' && (
-                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg">
+                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
                             <User className="h-5 w-5 text-white" />
                           </div>
                         )}

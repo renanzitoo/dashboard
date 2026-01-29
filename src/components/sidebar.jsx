@@ -25,25 +25,29 @@ export function Sidebar() {
       name: 'Dashboard',
       href: '/dashboard',
       icon: LayoutDashboard,
-      gradient: 'from-gray-500 to-gray-600',
+      gradient: 'from-[#4E98D9] to-[#566D8C]',
+      color: '#4E98D9',
     },
     {
       name: 'Agendamentos',
       href: '/dashboard/appointments',
       icon: Calendar,
-      gradient: 'from-gray-600 to-slate-700',
+      gradient: 'from-[#72C1F2] to-[#4E98D9]',
+      color: '#72C1F2',
     },
     {
       name: 'Clientes',
       href: '/dashboard/customers',
       icon: Users,
-      gradient: 'from-slate-600 to-gray-700',
+      gradient: 'from-[#4E98D9] to-[#72C1F2]',
+      color: '#4E98D9',
     },
     {
       name: 'Conversas',
       href: '/dashboard/conversations',
       icon: MessageSquare,
-      gradient: 'from-gray-700 to-slate-800',
+      gradient: 'from-[#79D0F2] to-[#72C1F2]',
+      color: '#79D0F2',
     },
   ]
 
@@ -60,7 +64,7 @@ export function Sidebar() {
         {/* Logo */}
         <div className="flex h-16 items-center justify-between border-b border-border px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-gray-600 to-gray-700 shadow-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4E98D9] to-[#566D8C] shadow-lg">
               <LayoutDashboard className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -99,7 +103,7 @@ export function Sidebar() {
                   'group flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200',
                   active
                     ? 'bg-gradient-to-r shadow-md ' + item.gradient + ' text-white'
-                    : 'text-muted-foreground hover:bg-accent'
+                    : 'text-foreground hover:bg-accent hover:text-accent-foreground'
                 )}
               >
                 <div
@@ -107,10 +111,14 @@ export function Sidebar() {
                     'flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-200',
                     active
                       ? 'bg-white/20'
-                      : 'bg-secondary'
+                      : 'bg-secondary/50'
                   )}
+                  style={!active ? {backgroundColor: item.color + '15'} : {}}
                 >
-                  <Icon className={cn('h-5 w-5', active ? 'text-white' : 'text-muted-foreground')} />
+                  <Icon 
+                    className={cn('h-5 w-5', active ? 'text-white' : '')} 
+                    style={!active ? {color: item.color} : {}}
+                  />
                 </div>
                 <span className={cn('font-medium', active ? 'text-white' : '')}>{item.name}</span>
               </Link>

@@ -27,27 +27,17 @@ export default function DashboardPage() {
         .select('id, status')
         .order('created_at', { ascending: false })
 
-      if (appointmentsError) {
-        console.error('Erro ao carregar estatísticas de agendamentos:', appointmentsError)
-      }
-
       // Customers
       const { data: customers, error: customersError } = await supabase
         .from('customers')
         .select('id')
-
-      if (customersError) {
-        console.error('Erro ao carregar estatísticas de clientes:', customersError)
-      }
 
       // Conversations
       const { data: conversations, error: conversationsError } = await supabase
         .from('conversations')
         .select('id')
 
-      if (conversationsError) {
-        console.error('Erro ao carregar estatísticas de conversas:', conversationsError)
-      }
+
 
       const total = appointments?.length || 0
       const completed = appointments?.filter(a => a.status === 'completed').length || 0
@@ -65,7 +55,6 @@ export default function DashboardPage() {
         conversations: conversationsCount,
       })
     } catch (err) {
-      console.error('Erro ao carregar estatísticas:', err)
     } finally {
       setLoading(false)
     }
@@ -81,7 +70,6 @@ export default function DashboardPage() {
         const data = await response.json()
         
         if (data.hasChanges) {
-          console.log('🔔 Webhook - Mudança detectada em', table)
           lastCheckRef.current[table] = data.timestamp
           hasChanges = true
         }
@@ -91,7 +79,6 @@ export default function DashboardPage() {
         loadStats()
       }
     } catch (error) {
-      console.error('Erro ao verificar webhooks:', error)
     }
   }, [loadStats])
 
@@ -99,12 +86,10 @@ export default function DashboardPage() {
     loadStats()
     
     // Verifica webhooks a cada 2 segundos
-    console.log('🔔 Sistema de webhooks ativado')
     const interval = setInterval(checkWebhooks, 2000)
 
     return () => {
       clearInterval(interval)
-      console.log('⏸️ Sistema de webhooks parado')
     }
   }, [loadStats, checkWebhooks])
 
@@ -137,15 +122,15 @@ export default function DashboardPage() {
         <div className="mb-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Link href="/dashboard/appointments" className="block group">
             <Card className="relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#72C1F2] to-[#4E98D9] opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-base font-semibold">Agendamentos</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
+                <div className="rounded-xl bg-gradient-to-br from-[#72C1F2] to-[#4E98D9] p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
                   <Calendar className="h-5 w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-4xl font-bold bg-gradient-to-br from-gray-700 to-slate-800 dark:from-gray-300 dark:to-slate-400 bg-clip-text text-transparent">{stats.total}</div>
+                <div className="text-4xl font-bold" style={{color: '#4E98D9'}}>{stats.total}</div>
                 <p className="text-sm text-muted-foreground flex items-center gap-1">
                   <span className="text-xs">→</span> Ver todos os agendamentos
                 </p>
@@ -155,15 +140,15 @@ export default function DashboardPage() {
 
           <Link href="/dashboard/customers" className="block group">
             <Card className="relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-teal-600 opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#566D8C] to-[#4E98D9] opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-base font-semibold">Clientes</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-green-500 to-teal-600 p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
+                <div className="rounded-xl bg-gradient-to-br from-[#566D8C] to-[#4E98D9] p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
                   <Users className="h-5 w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-4xl font-bold bg-gradient-to-br from-emerald-700 to-teal-800 dark:from-emerald-300 dark:to-teal-400 bg-clip-text text-transparent">{stats.customers}</div>
+                <div className="text-4xl font-bold" style={{color: '#566D8C'}}>{stats.customers}</div>
                 <p className="text-sm text-muted-foreground flex items-center gap-1">
                   <span className="text-xs">→</span> Gerenciar clientes
                 </p>
@@ -173,15 +158,15 @@ export default function DashboardPage() {
 
           <Link href="/dashboard/conversations" className="block group">
             <Card className="relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-orange-600 opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#79D0F2] to-[#72C1F2] opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-base font-semibold">Conversas</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-pink-500 to-orange-600 p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
+                <div className="rounded-xl bg-gradient-to-br from-[#79D0F2] to-[#72C1F2] p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
                   <MessageSquare className="h-5 w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-4xl font-bold bg-gradient-to-br from-amber-700 to-orange-800 dark:from-amber-300 dark:to-orange-400 bg-clip-text text-transparent">{stats.conversations}</div>
+                <div className="text-4xl font-bold" style={{color: '#79D0F2'}}>{stats.conversations}</div>
                 <p className="text-sm text-muted-foreground flex items-center gap-1">
                   <span className="text-xs">→</span> Ver conversas ativas
                 </p>
@@ -200,12 +185,12 @@ export default function DashboardPage() {
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Total</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-gray-500 to-slate-600 dark:from-gray-600 dark:to-slate-700 p-2.5 shadow-md">
+                <div className="rounded-xl bg-gradient-to-br from-[#4E98D9] to-[#566D8C] p-2.5 shadow-md">
                   <BarChart3 className="h-4 w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-4xl font-bold">{stats.total}</div>
+                <div className="text-4xl font-bold" style={{color: '#4E98D9'}}>{stats.total}</div>
                 <p className="text-xs text-muted-foreground">
                   Agendamentos totais
                 </p>
@@ -215,7 +200,7 @@ export default function DashboardPage() {
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Concluídos</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 dark:from-emerald-600 dark:to-teal-700 p-2.5 shadow-md">
+                <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 p-2.5 shadow-md">
                   <CheckCircle className="h-4 w-4 text-white" />
                 </div>
               </CardHeader>
@@ -230,12 +215,12 @@ export default function DashboardPage() {
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Pendentes</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-slate-500 to-gray-600 dark:from-slate-600 dark:to-gray-700 p-2.5 shadow-md">
+                <div className="rounded-xl bg-gradient-to-br from-[#72C1F2] to-[#79D0F2] p-2.5 shadow-md">
                   <Clock className="h-4 w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-4xl font-bold text-orange-600">{stats.pending}</div>
+                <div className="text-4xl font-bold" style={{color: '#72C1F2'}}>{stats.pending}</div>
                 <p className="text-xs text-muted-foreground">
                   Aguardando atendimento
                 </p>
@@ -245,7 +230,7 @@ export default function DashboardPage() {
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                 <CardTitle className="text-sm font-medium text-muted-foreground">Cancelados</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-rose-500 to-red-600 dark:from-rose-600 dark:to-red-700 p-2.5 shadow-md">
+                <div className="rounded-xl bg-gradient-to-br from-rose-500 to-red-600 p-2.5 shadow-md">
                   <Calendar className="h-4 w-4 text-white" />
                 </div>
               </CardHeader>

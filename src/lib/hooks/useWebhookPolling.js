@@ -13,12 +13,10 @@ export function useWebhookPolling({ table, onUpdate, interval = 2000 }) {
       const data = await response.json()
       
       if (data.hasChanges) {
-        console.log('🔔 Mudança detectada via webhook:', table)
         lastCheckRef.current = data.timestamp
         onUpdate()
       }
     } catch (error) {
-      console.error('Erro ao verificar webhook:', error)
     }
   }, [table, onUpdate])
 

@@ -34,7 +34,6 @@ export function ThemeProvider({ children }) {
     // Sincronizar tema entre abas
     const handleStorageChange = (e) => {
       if (e.key === 'theme' && e.newValue) {
-        console.log('Tema mudou em outra aba:', e.newValue)
         setTheme(e.newValue)
       }
     }
@@ -45,7 +44,6 @@ export function ThemeProvider({ children }) {
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
-    console.log('Mudando tema de', theme, 'para', newTheme)
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
     

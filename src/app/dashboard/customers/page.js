@@ -19,15 +19,11 @@ export default function CustomersPage() {
         .order('created_at', { ascending: false })
 
       if (error) {
-        console.error('Erro ao carregar clientes:', error)
-        console.error('Detalhes do erro:', error.message)
         return
       }
 
-      console.log('Clientes carregados:', data)
       setItems(data || [])
     } catch (err) {
-      console.error('Erro:', err)
     } finally {
       setLoading(false)
     }
@@ -39,12 +35,10 @@ export default function CustomersPage() {
       const data = await response.json()
       
       if (data.hasChanges) {
-        console.log('🔔 Webhook - Cliente atualizado')
         lastCheckRef.current = data.timestamp
         loadCustomers()
       }
     } catch (error) {
-      console.error('Erro ao verificar webhook:', error)
     }
   }, [loadCustomers])
 
@@ -52,7 +46,6 @@ export default function CustomersPage() {
     loadCustomers()
 
     // Webhook polling a cada 2 segundos
-    console.log('🔔 Webhook ativado para customers')
     const interval = setInterval(checkWebhook, 2000)
 
     return () => {
@@ -80,7 +73,7 @@ export default function CustomersPage() {
     <div className="min-h-screen">
       <main className="container mx-auto px-6 py-8 lg:px-8">
         <div className="mb-8">
-          <h1 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-3xl font-bold text-transparent">
+          <h1 className="text-3xl font-bold" style={{color: '#4E98D9'}}>
             Clientes
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Gerencie sua base de clientes</p>
@@ -103,7 +96,7 @@ export default function CustomersPage() {
               <Card key={customer.id} className="group border-0 bg-card/70 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] hover:shadow-xl">
                 <CardContent className="p-6">
                   <div className="mb-5 flex items-center gap-4">
-                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-teal-600 shadow-lg transition-transform duration-300 group-hover:scale-110">
+                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full shadow-lg transition-transform duration-300 group-hover:scale-110" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
                       <User className="h-7 w-7 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">

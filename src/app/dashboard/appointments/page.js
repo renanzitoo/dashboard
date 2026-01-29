@@ -24,14 +24,12 @@ export default function AppointmentsPage() {
         .order('start_time', { ascending: false })
 
       if (error) {
-        console.error('Erro ao carregar agendamentos:', error)
         return
       }
 
       setItems(data || [])
       setFilteredItems(data || [])
     } catch (err) {
-      console.error('Erro:', err)
     } finally {
       setLoading(false)
     }
@@ -43,12 +41,10 @@ export default function AppointmentsPage() {
       const data = await response.json()
       
       if (data.hasChanges) {
-        console.log('🔔 Webhook - Agendamento atualizado')
         lastCheckRef.current = data.timestamp
         loadAppointments()
       }
     } catch (error) {
-      console.error('Erro ao verificar webhook:', error)
     }
   }, [loadAppointments])
 
@@ -56,7 +52,6 @@ export default function AppointmentsPage() {
     loadAppointments()
 
     // Webhook polling a cada 2 segundos
-    console.log('🔔 Webhook ativado para appointments')
     const interval = setInterval(checkWebhook, 2000)
 
     return () => {
@@ -103,9 +98,9 @@ export default function AppointmentsPage() {
       case 'cancelled':
         return <XCircle className="h-5 w-5 text-red-500" />
       case 'pending':
-        return <AlertCircle className="h-5 w-5 text-yellow-500" />
+        return <AlertCircle className="h-5 w-5" style={{color: '#72C1F2'}} />
       default:
-        return <Clock className="h-5 w-5 text-gray-500" />
+        return <Clock className="h-5 w-5" style={{color: '#79D0F2'}} />
     }
   }
 
@@ -134,7 +129,7 @@ export default function AppointmentsPage() {
     <div className="min-h-screen">
       <main className="container mx-auto px-6 py-8 lg:px-8">
         <div className="mb-8">
-          <h1 className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-3xl font-bold text-transparent">
+          <h1 className="text-3xl font-bold" style={{color: '#72C1F2'}}>
             Agendamentos
           </h1>
           <p className="text-sm text-muted-foreground mt-1">Gerencie todos os agendamentos</p>
@@ -176,7 +171,8 @@ export default function AppointmentsPage() {
                   setStatusFilter('')
                   setDateFilter('')
                 }}
-                className="h-10 w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg transition-all hover:from-purple-700 hover:to-blue-700 hover:shadow-xl"
+                style={{backgroundColor: '#72C1F2'}}
+                className="h-10 w-full text-white shadow-lg transition-all hover:opacity-90 hover:shadow-xl"
               >
                 Limpar Filtros
               </Button>
@@ -200,11 +196,11 @@ export default function AppointmentsPage() {
                     <div className="mt-1">{getStatusIcon(appointment.status)}</div>
                     <div className="flex-1 space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <Calendar className="h-4 w-4" style={{color: '#72C1F2'}} />
                         <span className="font-semibold">{formatDate(appointment.start_time)}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
+                        <Clock className="h-4 w-4" style={{color: '#79D0F2'}} />
                         <span>
                           {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
                         </span>

@@ -9,7 +9,7 @@ export default function CustomersPage() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef(0)
+  const lastCheckRef = useRef(Date.now())
 
   const loadCustomers = useCallback(async () => {
     try {

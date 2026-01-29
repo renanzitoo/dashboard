@@ -17,7 +17,7 @@ export default function DashboardPage() {
   })
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef({ appointments: 0, customers: 0, conversations: 0 })
+  const lastCheckRef = useRef({ appointments: Date.now(), customers: Date.now(), conversations: Date.now() })
 
   const loadStats = useCallback(async () => {
     try {

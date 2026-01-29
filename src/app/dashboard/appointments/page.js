@@ -14,7 +14,7 @@ export default function AppointmentsPage() {
   const [dateFilter, setDateFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef(0)
+  const lastCheckRef = useRef(Date.now())
 
   const loadAppointments = useCallback(async () => {
     try {

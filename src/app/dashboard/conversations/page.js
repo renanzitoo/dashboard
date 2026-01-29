@@ -11,7 +11,7 @@ export default function ConversationsPage() {
   const [customers, setCustomers] = useState({})
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef({ conversations: 0, customers: 0 })
+  const lastCheckRef = useRef({ conversations: Date.now(), customers: Date.now() })
 
   const loadConversations = useCallback(async () => {
     try {

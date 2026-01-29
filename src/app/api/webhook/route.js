@@ -7,31 +7,45 @@ export async function POST(request) {
   try {
     const payload = await request.json()
     
-    // Registra a mudança
-    const table = payload.table
+    console.log('🔔 Webhook recebido - Payload completo:', payload)
+    
+    // Tentar extrair o nome da tabela de diferentes campos possíveis
+    const table = payload.table || 
+                  payload.table_name || 
+                  payload.schema?.table || 
+                  payload.record?.table ||
+                  'unknown'
+    
+    const type = payload.type || payload.operation || payload.event || 'unknown'
     const timestamp = Date.now()
     
-    console.log('🔔 Webhook recebido:', {
+    console.log('🔔 Webhook processado:', {
       table,
-      type: payload.type,
-      timestamp
+      type,
+      timestamp,
+      payloadKeys: Object.keys(payload)
     })
     
     // Armazena a mudança
     changes.set(table, {
       timestamp,
-      type: payload.type,
-      data: payload.record
+      type,
+      data: payload.record || payload.new || payload
     })
+    
+    // Também armazena um "all" para forçar atualização geral
+    changes.set('_all', { timestamp, type, table })
     
     return NextResponse.json({ 
       success: true,
-      message: 'Webhook recebido'
+      message: 'Webhook recebido',
+      table,
+      type
     })
   } catch (error) {
-    console.error('Erro no webhook:', error)
+    console.error('❌ Erro no webhook:', error)
     return NextResponse.json(
-      { error: 'Erro ao processar webhook' },
+      { error: 'Erro ao processar webhook', details: error.message },
       { status: 500 }
     )
   }

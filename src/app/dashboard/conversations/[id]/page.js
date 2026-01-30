@@ -14,6 +14,7 @@ export default function ConversationDetailPage({ params }) {
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
+  const messagesEndRef = useRef(null)
   const lastCheckRef = useRef({
     messages: Date.now(),
     conversations: Date.now(),
@@ -64,6 +65,13 @@ export default function ConversationDetailPage({ params }) {
       }
     }
   }, [resolvedParams?.id, checkWebhooks])
+
+  // Scroll automático para a última mensagem
+  useEffect(() => {
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
 
   const loadConversation = async () => {
     try {
@@ -194,65 +202,65 @@ export default function ConversationDetailPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-6 py-8 lg:px-8">
-        <div className="mb-8 flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild className="hover:bg-purple-50 dark:hover:bg-purple-900/20">
+    <div className="min-h-screen pb-6">
+      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="mb-6 flex items-center gap-3 lg:mb-8 lg:gap-4">
+          <Button variant="ghost" size="icon" asChild className="h-9 w-9 hover:bg-purple-50 dark:hover:bg-purple-900/20">
             <Link href="/dashboard/conversations">
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Link>
           </Button>
           <div>
-            <h1 className="text-3xl font-bold" style={{color: '#79D0F2'}}>
+            <h1 className="text-xl font-bold sm:text-2xl lg:text-3xl" style={{color: '#79D0F2'}}>
               Detalhes da Conversa
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">Visualize e acompanhe a conversa</p>
+            <p className="text-xs text-muted-foreground mt-1 sm:text-sm">Visualize e acompanhe a conversa</p>
           </div>
         </div>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3 lg:gap-6">
           {/* Customer Info Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm sticky top-6">
-              <CardHeader className="border-b pb-4">
-                <CardTitle className="text-lg">Informações do Cliente</CardTitle>
+            <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm lg:sticky lg:top-6">
+              <CardHeader className="border-b pb-3 sm:pb-4">
+                <CardTitle className="text-base sm:text-lg">Informações do Cliente</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-5 pt-6">
+              <CardContent className="space-y-4 pt-4 sm:space-y-5 sm:pt-6">
                 {customer ? (
                   <>
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
-                        <User className="h-8 w-8 text-white" />
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="flex h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
+                        <User className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-lg truncate">{customer.name}</p>
+                        <p className="font-semibold text-base sm:text-lg truncate">{customer.name}</p>
                         <p className="text-xs text-muted-foreground">Cliente</p>
                       </div>
                     </div>
 
-                    <div className="space-y-3 border-t pt-5">
+                    <div className="space-y-2 border-t pt-4 sm:space-y-3 sm:pt-5">
 
                     {customer.email && (
-                      <div className="flex items-center gap-3 rounded-lg p-3" style={{backgroundColor: '#E8F4FC'}}>
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{backgroundColor: '#4E98D9'}}>
-                          <Mail className="h-4 w-4 text-white" />
+                      <div className="flex items-center gap-2 rounded-lg p-2.5 sm:gap-3 sm:p-3" style={{backgroundColor: '#E8F4FC'}}>
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{backgroundColor: '#4E98D9'}}>
+                          <Mail className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                         </div>
-                        <span className="break-all text-sm font-medium" style={{color: '#1e3a5f'}}>{customer.email}</span>
+                        <span className="break-all text-xs font-medium sm:text-sm" style={{color: '#1e3a5f'}}>{customer.email}</span>
                       </div>
                     )}
 
                     {customer.phone && (
-                      <div className="flex items-center gap-3 rounded-lg p-3" style={{backgroundColor: '#E8F4FC'}}>
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{backgroundColor: '#72C1F2'}}>
-                          <Phone className="h-4 w-4 text-white" />
+                      <div className="flex items-center gap-2 rounded-lg p-2.5 sm:gap-3 sm:p-3" style={{backgroundColor: '#E8F4FC'}}>
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{backgroundColor: '#72C1F2'}}>
+                          <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                         </div>
-                        <span className="text-sm font-medium" style={{color: '#1e3a5f'}}>{customer.phone}</span>
+                        <span className="text-xs font-medium sm:text-sm" style={{color: '#1e3a5f'}}>{customer.phone}</span>
                       </div>
                     )}
                     </div>
 
-                    <div className="space-y-3 border-t pt-5">
-                      <p className="text-sm font-medium text-muted-foreground">Status da Conversa</p>
-                      <span className={`mt-2 inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-sm ${
+                    <div className="space-y-3 border-t pt-4 sm:pt-5">
+                      <p className="text-xs font-medium text-muted-foreground sm:text-sm">Status da Conversa</p>
+                      <span className={`mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium shadow-sm sm:px-4 sm:py-2 sm:text-sm ${
                         conversation.status === 'open' 
                           ? 'text-white'
                           : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
@@ -267,8 +275,8 @@ export default function ConversationDetailPage({ params }) {
                     </div>
 
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">Criada em</p>
-                      <p className="mt-1 text-sm font-medium">{formatDate(conversation.created_at)}</p>
+                      <p className="text-xs font-medium text-muted-foreground sm:text-sm">Criada em</p>
+                      <p className="mt-1 text-xs font-medium sm:text-sm">{formatDate(conversation.created_at)}</p>
                     </div>
                   </>
                 ) : (
@@ -281,37 +289,37 @@ export default function ConversationDetailPage({ params }) {
           {/* Messages */}
           <div className="lg:col-span-2">
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
-              <CardHeader className="border-b pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MessageSquare className="h-5 w-5" style={{color: '#79D0F2'}} />
+              <CardHeader className="border-b pb-3 sm:pb-4">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" style={{color: '#79D0F2'}} />
                   Mensagens ({messages.length})
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 {messages.length === 0 ? (
-                  <div className="flex min-h-[400px] items-center justify-center p-6">
+                  <div className="flex min-h-[300px] items-center justify-center p-6 sm:min-h-[400px]">
                     <div className="text-center">
-                      <MessageSquare className="mx-auto mb-3 h-12 w-12 text-muted-foreground opacity-50" />
-                      <p className="text-muted-foreground">Nenhuma mensagem ainda</p>
+                      <MessageSquare className="mx-auto mb-3 h-10 w-10 text-muted-foreground opacity-50 sm:h-12 sm:w-12" />
+                      <p className="text-sm text-muted-foreground sm:text-base">Nenhuma mensagem ainda</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-6 p-6 max-h-[600px] overflow-y-auto">
+                  <div className="space-y-4 p-4 max-h-[500px] overflow-y-auto sm:space-y-6 sm:p-6 sm:max-h-[600px]">
                     {messages.map((message) => (
                       <div
                         key={message.id}
-                        className={`flex gap-3 ${
+                        className={`flex gap-2 sm:gap-3 ${
                           message.sender === 'bot' ? 'justify-start' : 'justify-end'
                         }`}
                       >
                         {message.sender === 'bot' && (
-                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #566D8C, #4E98D9)'}}>
-                            <Bot className="h-5 w-5 text-white" />
+                          <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #566D8C, #4E98D9)'}}>
+                            <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                           </div>
                         )}
                         
                         <div
-                          className={`max-w-[75%] rounded-2xl px-5 py-3 shadow-md ${
+                          className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-3 py-2 shadow-md sm:px-5 sm:py-3 ${
                             message.sender === 'bot'
                               ? 'text-white'
                               : 'text-white shadow-lg'
@@ -321,15 +329,16 @@ export default function ConversationDetailPage({ params }) {
                             : {background: 'linear-gradient(135deg, #72C1F2, #4E98D9)'}
                           }
                         >
-                          <p className="text-sm leading-relaxed">{message.content}</p>
-                          <p className="mt-2 text-xs text-white/70">
+                          <p className="text-xs leading-relaxed sm:text-sm">{message.content}</p>
+                          <p className="mt-1.5 text-xs text-white/70 sm:mt-2">
                             {formatDate(message.created_at)}
                           </p>
                         </div>
 
+                    <div ref={messagesEndRef} />
                         {message.sender === 'customer' && (
-                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
-                            <User className="h-5 w-5 text-white" />
+                          <div className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-full shadow-lg" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
+                            <User className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                           </div>
                         )}
                       </div>

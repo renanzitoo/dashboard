@@ -110,28 +110,28 @@ export default function DashboardPage() {
     : 0
 
   return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-6 py-8 lg:px-8">
+    <div className="min-h-screen pb-6">
+      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Olá! 👋</h2>
-          <p className="text-muted-foreground">Bem-vindo ao seu painel de controle</p>
+        <div className="mb-6 lg:mb-8">
+          <h2 className="text-2xl font-bold mb-2 sm:text-3xl">Olá! 👋</h2>
+          <p className="text-sm text-muted-foreground sm:text-base">Bem-vindo ao seu painel de controle</p>
         </div>
 
         {/* Navigation Cards */}
-        <div className="mb-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 lg:mb-10">
           <Link href="/dashboard/appointments" className="block group">
             <Card className="relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-[#72C1F2] to-[#4E98D9] opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-base font-semibold">Agendamentos</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-[#72C1F2] to-[#4E98D9] p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
-                  <Calendar className="h-5 w-5 text-white" />
+                <CardTitle className="text-sm font-semibold sm:text-base">Agendamentos</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-[#72C1F2] to-[#4E98D9] p-2.5 sm:p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
+                  <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-4xl font-bold" style={{color: '#4E98D9'}}>{stats.total}</div>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <div className="text-3xl font-bold sm:text-4xl" style={{color: '#4E98D9'}}>{stats.total}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1 sm:text-sm">
                   <span className="text-xs">→</span> Ver todos os agendamentos
                 </p>
               </CardContent>
@@ -142,14 +142,14 @@ export default function DashboardPage() {
             <Card className="relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-[#566D8C] to-[#4E98D9] opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-base font-semibold">Clientes</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-[#566D8C] to-[#4E98D9] p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
-                  <Users className="h-5 w-5 text-white" />
+                <CardTitle className="text-sm font-semibold sm:text-base">Clientes</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-[#566D8C] to-[#4E98D9] p-2.5 sm:p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-4xl font-bold" style={{color: '#566D8C'}}>{stats.customers}</div>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <div className="text-3xl font-bold sm:text-4xl" style={{color: '#566D8C'}}>{stats.customers}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1 sm:text-sm">
                   <span className="text-xs">→</span> Gerenciar clientes
                 </p>
               </CardContent>
@@ -160,14 +160,14 @@ export default function DashboardPage() {
             <Card className="relative cursor-pointer overflow-hidden border-0 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-br from-[#79D0F2] to-[#72C1F2] opacity-0 transition-opacity duration-300 group-hover:opacity-10"></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-base font-semibold">Conversas</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-[#79D0F2] to-[#72C1F2] p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
-                  <MessageSquare className="h-5 w-5 text-white" />
+                <CardTitle className="text-sm font-semibold sm:text-base">Conversas</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-[#79D0F2] to-[#72C1F2] p-2.5 sm:p-3 shadow-md transition-transform duration-300 group-hover:scale-110">
+                  <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="text-4xl font-bold" style={{color: '#79D0F2'}}>{stats.conversations}</div>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <div className="text-3xl font-bold sm:text-4xl" style={{color: '#79D0F2'}}>{stats.conversations}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1 sm:text-sm">
                   <span className="text-xs">→</span> Ver conversas ativas
                 </p>
               </CardContent>
@@ -176,21 +176,21 @@ export default function DashboardPage() {
         </div>
 
         {/* Statistics */}
-        <div className="mb-10">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Estatísticas</h2>
-            <span className="text-sm text-muted-foreground">Atualizado em tempo real</span>
+        <div className="mb-8 lg:mb-10">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:mb-6">
+            <h2 className="text-xl font-bold sm:text-2xl">Estatísticas</h2>
+            <span className="text-xs text-muted-foreground sm:text-sm">Atualizado em tempo real</span>
           </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Total</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-[#4E98D9] to-[#566D8C] p-2.5 shadow-md">
-                  <BarChart3 className="h-4 w-4 text-white" />
+                <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Total</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-[#4E98D9] to-[#566D8C] p-2 sm:p-2.5 shadow-md">
+                  <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-4xl font-bold" style={{color: '#4E98D9'}}>{stats.total}</div>
+                <div className="text-3xl font-bold sm:text-4xl" style={{color: '#4E98D9'}}>{stats.total}</div>
                 <p className="text-xs text-muted-foreground">
                   Agendamentos totais
                 </p>
@@ -199,13 +199,13 @@ export default function DashboardPage() {
 
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Concluídos</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 p-2.5 shadow-md">
-                  <CheckCircle className="h-4 w-4 text-white" />
+                <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Concluídos</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 p-2 sm:p-2.5 shadow-md">
+                  <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-4xl font-bold text-green-600">{stats.completed}</div>
+                <div className="text-3xl font-bold sm:text-4xl text-green-600">{stats.completed}</div>
                 <p className="text-xs text-muted-foreground">
                   {completionPercentage}% do total
                 </p>
@@ -214,13 +214,13 @@ export default function DashboardPage() {
 
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Pendentes</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-[#72C1F2] to-[#79D0F2] p-2.5 shadow-md">
-                  <Clock className="h-4 w-4 text-white" />
+                <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Pendentes</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-[#72C1F2] to-[#79D0F2] p-2 sm:p-2.5 shadow-md">
+                  <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-4xl font-bold" style={{color: '#72C1F2'}}>{stats.pending}</div>
+                <div className="text-3xl font-bold sm:text-4xl" style={{color: '#72C1F2'}}>{stats.pending}</div>
                 <p className="text-xs text-muted-foreground">
                   Aguardando atendimento
                 </p>
@@ -229,13 +229,13 @@ export default function DashboardPage() {
 
             <Card className="border-0 shadow-lg transition-all duration-300 hover:shadow-xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-medium text-muted-foreground">Cancelados</CardTitle>
-                <div className="rounded-xl bg-gradient-to-br from-rose-500 to-red-600 p-2.5 shadow-md">
-                  <Calendar className="h-4 w-4 text-white" />
+                <CardTitle className="text-xs font-medium text-muted-foreground sm:text-sm">Cancelados</CardTitle>
+                <div className="rounded-xl bg-gradient-to-br from-rose-500 to-red-600 p-2 sm:p-2.5 shadow-md">
+                  <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-4xl font-bold text-red-600">{stats.cancelled}</div>
+                <div className="text-3xl font-bold sm:text-4xl text-red-600">{stats.cancelled}</div>
                 <p className="text-xs text-muted-foreground">
                   Agendamentos cancelados
                 </p>

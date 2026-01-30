@@ -70,16 +70,16 @@ export default function CustomersPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <main className="container mx-auto px-6 py-8 lg:px-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold" style={{color: '#4E98D9'}}>
+    <div className="min-h-screen pb-6">
+      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="mb-6 lg:mb-8">
+          <h1 className="text-2xl font-bold sm:text-3xl" style={{color: '#4E98D9'}}>
             Clientes
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Gerencie sua base de clientes</p>
+          <p className="text-xs text-muted-foreground mt-1 sm:text-sm">Gerencie sua base de clientes</p>
         </div>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">
+        <div className="mb-4 flex items-center justify-between sm:mb-6">
+          <h2 className="text-xl font-bold sm:text-2xl">
             {items.length} {items.length === 1 ? 'cliente' : 'clientes'}
           </h2>
         </div>
@@ -91,16 +91,16 @@ export default function CustomersPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((customer) => (
               <Card key={customer.id} className="group border-0 bg-card/70 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] hover:shadow-xl">
                 <CardContent className="p-6">
                   <div className="mb-5 flex items-center gap-4">
-                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full shadow-lg transition-transform duration-300 group-hover:scale-110" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
-                      <User className="h-7 w-7 text-white" />
+                    <div className="flex h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0 items-center justify-center rounded-full shadow-lg transition-transform duration-300 group-hover:scale-110" style={{background: 'linear-gradient(135deg, #4E98D9, #72C1F2)'}}>
+                      <User className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg truncate">{customer.name}</h3>
+                      <h3 className="font-semibold text-base sm:text-lg truncate">{customer.name}</h3>
                       <p className="text-xs text-muted-foreground">
                         Cliente desde {formatDate(customer.created_at)}
                       </p>
@@ -109,19 +109,19 @@ export default function CustomersPage() {
                   
                   <div className="space-y-3 border-t pt-4">
                     {customer.email && (
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                      <div className="flex items-center gap-2 sm:gap-3 text-sm">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30 flex-shrink-0">
                           <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <span className="truncate flex-1">{customer.email}</span>
+                        <span className="truncate flex-1 text-xs sm:text-sm">{customer.email}</span>
                       </div>
                     )}
                     {customer.phone && (
-                      <div className="flex items-center gap-3 text-sm">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+                      <div className="flex items-center gap-2 sm:gap-3 text-sm">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30 flex-shrink-0">
                           <Phone className="h-4 w-4 text-green-600 dark:text-green-400" />
                         </div>
-                        <span>{customer.phone}</span>
+                        <span className="text-xs sm:text-sm">{customer.phone}</span>
                       </div>
                     )}
                   </div>

@@ -18,6 +18,17 @@ export const metadata = {
   description: "Painel de controle",
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#4E98D9' },
+    { media: '(prefers-color-scheme: dark)', color: '#1a1a1a' }
+  ],
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>

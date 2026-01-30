@@ -32,7 +32,7 @@ export default function SobrePage() {
                 O Que Fazemos
               </h2>
               <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                Criamos <span className="font-semibold text-[#4E98D9]">agentes de atendimento inteligentes</span> 
+                Criamos <span className="font-semibold text-[#4E98D9]">agentes de atendimento inteligentes </span> 
                 que revolucionam a forma como sua empresa se comunica com os clientes. 
                 Nossos agentes de IA não são apenas chatbots – são assistentes verdadeiramente 
                 inteligentes que entendem contexto, aprendem com cada interação e oferecem 

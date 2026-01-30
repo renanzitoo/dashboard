@@ -29,7 +29,6 @@ export default function AppointmentDetailPage({ params }) {
         .single()
 
       if (appointmentError) {
-        console.error('Erro ao buscar agendamento:', appointmentError)
         return
       }
 
@@ -48,7 +47,6 @@ export default function AppointmentDetailPage({ params }) {
         }
       }
     } catch (err) {
-      console.error('Erro:', err)
     } finally {
       setLoading(false)
     }
@@ -63,7 +61,6 @@ export default function AppointmentDetailPage({ params }) {
   const updateStatus = async (newStatus) => {
     if (!appointment) return
 
-    console.log('Tentando atualizar agendamento:', appointment.id, 'para status:', newStatus)
     setUpdating(true)
     
     try {
@@ -73,21 +70,15 @@ export default function AppointmentDetailPage({ params }) {
         .eq('id', appointment.id)
         .select()
 
-      console.log('Resposta do update:', { data, error })
-
       if (error) {
-        console.error('Erro ao atualizar status:', error)
-        alert(`Erro ao atualizar: ${error.message}\nCódigo: ${error.code}\nDetalhes: ${error.details}`)
+        alert(`Erro ao atualizar: ${error.message}`)
         return
       }
       
       if (!data || data.length === 0) {
-        console.warn('Nenhum dado retornado após update')
         alert('Nenhum registro foi atualizado. Verifique as permissões no Supabase.')
         return
       }
-      
-      console.log('Atualização bem-sucedida:', data)
       
       // Atualiza o estado local
       setAppointment({ ...appointment, status: newStatus })
@@ -100,7 +91,6 @@ export default function AppointmentDetailPage({ params }) {
         router.push('/dashboard/appointments')
       }, 1500)
     } catch (err) {
-      console.error('Exceção ao atualizar:', err)
       alert(`Erro inesperado: ${err.message}`)
     } finally {
       setUpdating(false)

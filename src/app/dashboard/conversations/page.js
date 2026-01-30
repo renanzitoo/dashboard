@@ -84,30 +84,22 @@ export default function ConversationsPage() {
         .lt('started_at', twentyFourHoursAgo.toISOString())
 
       if (fetchError) {
-        console.error('Erro ao buscar conversas antigas:', fetchError)
         return
       }
 
       if (oldConversations && oldConversations.length > 0) {
-        console.log(`Fechando ${oldConversations.length} conversa(s) antiga(s)`)
-        
         // Atualiza todas as conversas antigas para fechadas
         for (const conv of oldConversations) {
-          const { error: updateError } = await supabase
+          await supabase
             .from('conversations')
             .update({ status: 'closed' })
             .eq('id', conv.id)
-
-          if (updateError) {
-            console.error('Erro ao fechar conversa:', conv.id, updateError)
-          }
         }
 
         // Recarrega a lista
         loadConversations()
       }
     } catch (error) {
-      console.error('Erro ao verificar conversas antigas:', error)
     }
   }, [supabase, loadConversations])
 

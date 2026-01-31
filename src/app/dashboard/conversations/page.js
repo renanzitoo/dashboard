@@ -96,24 +96,16 @@ export default function ConversationsPage() {
   useEffect(() => {
     loadConversations()
 
-    // Webhook polling a cada 2 segundos
-    const webhookInterval = setInterval(checkWebhooks, 2000)
-
+    // Verifica conversas antigas imediatamente ao carregar
+    closeOldConversations()
+    
     // Verifica conversas antigas a cada 2 horas
-    closeOldConversations() // Executa imediatamente ao entrar na página
-    const closeInterval = setInterval(closeOldConversations, 2 * 60 * 60 * 1000) // 2 horas
+    const closeInterval = setInterval(closeOldConversations, 2 * 60 * 60 * 1000)
 
     return () => {
-      clearInterval(webhookInterval)
       clearInterval(closeInterval)
     }
-  }, [loadConversations, checkWebhooks])
-
-  // Separado para evitar conflito de dependências
-  useEffect(() => {
-    closeOldConversations()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [loadConversations, closeOldConversations])
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('pt-BR', {

@@ -1,7 +1,7 @@
 export default function SobrePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#D5E5F2] via-[#72C1F2] to-[#4E98D9] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-6 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-[#D5E5F2] via-[#72C1F2] to-[#4E98D9] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
+      <div className="container mx-auto px-6 py-16 flex-1">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
@@ -145,10 +145,10 @@ export default function SobrePage() {
             </section>
           </div>
 
-          {/* Footer */}
-          <div className="text-center mt-12">
-            <p className="text-white/80 text-sm">
-              © 2026 Oxyon AI - Inteligência que conecta, tecnologia que humaniza
+          {/* Footer - Copyright Section */}
+          <div className="mt-auto pt-8 pb-4 text-center">
+            <p className="text-white/60 text-xs">
+              © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
             </p>
           </div>
         </div>

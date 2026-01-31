@@ -42,7 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--gradient-from), var(--gradient-via), var(--gradient-to))' }}>
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--gradient-from), var(--gradient-via), var(--gradient-to))' }}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-4 top-0 h-72 w-72 animate-blob rounded-full bg-purple-300 opacity-70 mix-blend-multiply blur-xl filter dark:bg-purple-600 dark:opacity-30"></div>
@@ -121,6 +121,13 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
+
+      {/* Footer - Copyright Section */}
+      <footer className="absolute bottom-4 left-0 right-0">
+        <p className="text-center text-xs text-white/60">
+          © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
+        </p>
+      </footer>
 
       <style jsx>{`
         @keyframes blob {

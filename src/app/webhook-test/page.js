@@ -76,8 +76,8 @@ export default function WebhookTestPage() {
   }, [])
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen p-8 flex flex-col">
+      <div className="max-w-4xl mx-auto space-y-6 flex-1">
         <Card>
           <CardHeader>
             <CardTitle>🧪 Teste de Webhooks</CardTitle>
@@ -151,6 +151,13 @@ export default function WebhookTestPage() {
             </div>
           </CardContent>
         </Card>
+        
+        {/* Footer - Copyright Section */}
+        <footer className="mt-auto pt-8 pb-4">
+          <p className="text-center text-xs text-muted-foreground/60">
+            © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
+          </p>
+        </footer>
       </div>
     </div>
   )

@@ -166,8 +166,8 @@ export default function AppointmentsPage() {
   }
 
   return (
-    <div className="min-h-screen pb-6">
-      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+    <div className="min-h-screen pb-6 flex flex-col">
+      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8 flex-1">
         <div className="mb-6 lg:mb-8">
           <h1 className="text-2xl font-bold sm:text-3xl" style={{color: '#72C1F2'}}>
             Agendamentos
@@ -307,6 +307,15 @@ export default function AppointmentsPage() {
           </div>
         )}
       </main>
+      
+      {/* Footer - Copyright Section */}
+      <footer className="mt-auto py-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs text-muted-foreground/60">
+            © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

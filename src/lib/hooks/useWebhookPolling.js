@@ -1,36 +1,30 @@
-// Hook para escutar mudanças via webhooks
-import { useEffect, useCallback, useRef } from 'react'
+// Hook para escutar mudanças via Supabase Realtime (WebSocket)
+import { useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
-export function useWebhookPolling({ table, onUpdate, interval = 2000 }) {
-  const lastCheckRef = useRef(Date.now())
-  const pollingRef = useRef(null)
-
-  const checkForChanges = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `/api/webhook?table=${table}&since=${lastCheckRef.current}`
-      )
-      const data = await response.json()
-      
-      if (data.hasChanges) {
-        lastCheckRef.current = data.timestamp
-        onUpdate()
-      }
-    } catch (error) {
-    }
-  }, [table, onUpdate])
-
+export function useRealtimeSubscription({ table, onUpdate, event = '*' }) {
   useEffect(() => {
-    // Primeira verificação
-    checkForChanges()
+    const supabase = createClient()
     
-    // Polling leve para verificar mudanças
-    pollingRef.current = setInterval(checkForChanges, interval)
-    
+    // Subscreve aos eventos da tabela via WebSocket
+    const channel = supabase
+      .channel(`${table}-changes`)
+      .on(
+        'postgres_changes',
+        {
+          event, // '*' para todos eventos, ou 'INSERT', 'UPDATE', 'DELETE'
+          schema: 'public',
+          table: table
+        },
+        (payload) => {
+          onUpdate(payload)
+        }
+      )
+      .subscribe()
+
+    // Cleanup: remove a subscrição quando o componente desmontar
     return () => {
-      if (pollingRef.current) {
-        clearInterval(pollingRef.current)
-      }
+      supabase.removeChannel(channel)
     }
-  }, [checkForChanges, interval])
+  }, [table, onUpdate, event])
 }

@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { useRealtimeSubscription } from '@/lib/hooks/useWebhookPolling'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +18,6 @@ export default function AppointmentsPage() {
   const [showPast, setShowPast] = useState(false)
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef({ appointments: Date.now(), customers: Date.now() })
 
   const loadAppointments = useCallback(async () => {
     try {
@@ -61,38 +61,21 @@ export default function AppointmentsPage() {
     }
   }, [supabase])
 
-  const checkWebhook = useCallback(async () => {
-    try {
-      const tables = ['appointments', 'customers']
-      let hasChanges = false
-      
-      for (const table of tables) {
-        const response = await fetch(`/api/webhook?table=${table}&since=${lastCheckRef.current[table]}`)
-        const data = await response.json()
-        
-        if (data.hasChanges) {
-          lastCheckRef.current[table] = data.timestamp
-          hasChanges = true
-        }
-      }
-      
-      if (hasChanges) {
-        loadAppointments()
-      }
-    } catch (error) {
-    }
-  }, [loadAppointments])
+  // Realtime para appointments
+  useRealtimeSubscription({
+    table: 'appointments',
+    onUpdate: () => loadAppointments()
+  })
+
+  // Realtime para customers
+  useRealtimeSubscription({
+    table: 'customers',
+    onUpdate: () => loadAppointments()
+  })
 
   useEffect(() => {
     loadAppointments()
-
-    // Webhook polling a cada 2 segundos
-    const interval = setInterval(checkWebhook, 2000)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [loadAppointments, checkWebhook])
+  }, [loadAppointments])
 
   // Recarrega quando showPast muda
   useEffect(() => {

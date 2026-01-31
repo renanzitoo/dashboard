@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { useRealtimeSubscription } from '@/lib/hooks/useWebhookPolling'
 import { Card, CardContent } from '@/components/ui/card'
 import { MessageSquare, User, CheckCircle, XCircle } from 'lucide-react'
 
@@ -11,7 +12,6 @@ export default function ConversationsPage() {
   const [customers, setCustomers] = useState({})
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef({ conversations: Date.now(), customers: Date.now() })
 
   const loadConversations = useCallback(async () => {
     try {
@@ -49,27 +49,17 @@ export default function ConversationsPage() {
     }
   }, [supabase])
 
-  const checkWebhooks = useCallback(async () => {
-    try {
-      const tables = ['conversations', 'customers']
-      let hasChanges = false
-      
-      for (const table of tables) {
-        const response = await fetch(`/api/webhook?table=${table}&since=${lastCheckRef.current[table]}`)
-        const data = await response.json()
-        
-        if (data.hasChanges) {
-          lastCheckRef.current[table] = data.timestamp
-          hasChanges = true
-        }
-      }
-      
-      if (hasChanges) {
-        loadConversations()
-      }
-    } catch (error) {
-    }
-  }, [loadConversations])
+  // Realtime para conversations
+  useRealtimeSubscription({
+    table: 'conversations',
+    onUpdate: () => loadConversations()
+  })
+
+  // Realtime para customers
+  useRealtimeSubscription({
+    table: 'customers',
+    onUpdate: () => loadConversations()
+  })
 
   const closeOldConversations = useCallback(async () => {
     try {

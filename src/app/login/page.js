@@ -21,7 +21,7 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
@@ -31,11 +31,28 @@ export default function LoginPage() {
         return
       }
 
-      router.push('/dashboard')
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('bot_type')
+        .eq('id', authData.user.id)
+        .single()
+
+      if (userError) {
+
+        router.push('/dashboard-service')
+      } else {
+
+        if (userData.bot_type === 'shop') {
+          router.push('/dashboard-shop')
+        } else {
+
+          router.push('/dashboard-service')
+        }
+      }
+      
       router.refresh()
     } catch (err) {
       setError('Erro ao fazer login')
-      console.error(err)
     } finally {
       setLoading(false)
     }
@@ -43,7 +60,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(to bottom right, var(--gradient-from), var(--gradient-via), var(--gradient-to))' }}>
-      {/* Animated background elements */}
+      {}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-4 top-0 h-72 w-72 animate-blob rounded-full bg-purple-300 opacity-70 mix-blend-multiply blur-xl filter dark:bg-purple-600 dark:opacity-30"></div>
         <div className="animation-delay-2000 absolute -right-4 top-0 h-72 w-72 animate-blob rounded-full bg-yellow-300 opacity-70 mix-blend-multiply blur-xl filter dark:bg-yellow-600 dark:opacity-30"></div>
@@ -122,7 +139,7 @@ export default function LoginPage() {
         </CardContent>
       </Card>
 
-      {/* Footer - Copyright Section */}
+      {}
       <footer className="absolute bottom-4 left-0 right-0">
         <p className="text-center text-xs text-white/60">
           © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.

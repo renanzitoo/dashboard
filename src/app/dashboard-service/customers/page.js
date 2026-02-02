@@ -9,7 +9,7 @@ export default function CustomersPage() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const supabase = useMemo(() => createClient(), [])
-  const lastCheckRef = useRef(Date.now())
+  const lastCheckRef = useRef(0)
 
   const loadCustomers = useCallback(async () => {
     try {
@@ -45,7 +45,6 @@ export default function CustomersPage() {
   useEffect(() => {
     loadCustomers()
 
-    // Webhook polling a cada 2 segundos
     const interval = setInterval(checkWebhook, 2000)
 
     return () => {
@@ -64,21 +63,32 @@ export default function CustomersPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">Carregando...</div>
+        <div className="text-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen pb-6 flex flex-col">
-      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8 flex-1">
-        <div className="mb-6 lg:mb-8">
-          <h1 className="text-2xl font-bold sm:text-3xl" style={{color: '#4E98D9'}}>
-            Clientes
-          </h1>
-          <p className="text-xs text-muted-foreground mt-1 sm:text-sm">Gerencie sua base de clientes</p>
+    <div className="space-y-6">
+
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-500 p-6 text-white shadow-xl">
+        <div className="absolute right-0 top-0 h-full w-1/3 bg-white/10 transform skew-x-12"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <User className="h-6 w-6" />
+            </div>
+            <h1 className="text-2xl font-bold sm:text-3xl">Clientes</h1>
+          </div>
+          <p className="text-white/80">Gerencie sua base de clientes</p>
         </div>
-        <div className="mb-4 flex items-center justify-between sm:mb-6">
+      </div>
+      
+      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <div className="mb-6 lg:mb-8">
           <h2 className="text-xl font-bold sm:text-2xl">
             {items.length} {items.length === 1 ? 'cliente' : 'clientes'}
           </h2>
@@ -101,7 +111,7 @@ export default function CustomersPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-base sm:text-lg truncate">{customer.name}</h3>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground" suppressHydrationWarning>
                         Cliente desde {formatDate(customer.created_at)}
                       </p>
                     </div>
@@ -131,14 +141,11 @@ export default function CustomersPage() {
           </div>
         )}
       </main>
-      
-      {/* Footer - Copyright Section */}
-      <footer className="mt-auto py-4">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs text-muted-foreground/60">
-            © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
-          </p>
-        </div>
+
+      <footer className="pt-4 pb-2 text-center">
+        <p className="text-xs text-muted-foreground/60">
+          © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
+        </p>
       </footer>
     </div>
   )

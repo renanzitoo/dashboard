@@ -10,7 +10,6 @@ export default function WebhookTestPage() {
   const testWebhook = async () => {
     setTesting(true)
     try {
-      // Teste POST
       const postResponse = await fetch('/api/webhook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -23,11 +22,7 @@ export default function WebhookTestPage() {
       const postData = await postResponse.json()
       
       addLog('✅ POST enviado com sucesso: ' + JSON.stringify(postData))
-      
-      // Aguardar 1 segundo
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Teste GET
       const getResponse = await fetch('/api/webhook?table=customers&since=0')
       const getData = await getResponse.json()
       
@@ -65,8 +60,6 @@ export default function WebhookTestPage() {
 
   useEffect(() => {
     addLog('🚀 Página de teste iniciada')
-    
-    // Verificar mudanças a cada 3 segundos
     const interval = setInterval(() => {
       addLog('🔍 Verificando mudanças...')
       checkChanges()
@@ -152,7 +145,7 @@ export default function WebhookTestPage() {
           </CardContent>
         </Card>
         
-        {/* Footer - Copyright Section */}
+        
         <footer className="mt-auto pt-8 pb-4">
           <p className="text-center text-xs text-muted-foreground/60">
             © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.

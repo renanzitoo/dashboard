@@ -16,9 +16,9 @@ export default function ConversationDetailPage({ params }) {
   const supabase = createClient()
   const messagesEndRef = useRef(null)
   const lastCheckRef = useRef({
-    messages: Date.now(),
-    conversations: Date.now(),
-    customers: Date.now()
+    messages: 0,
+    conversations: 0,
+    customers: 0
   })
 
   // Webhook polling
@@ -194,7 +194,7 @@ export default function ConversationDetailPage({ params }) {
         <div className="text-center">
           <p className="mb-4 text-lg">Conversa não encontrada</p>
           <Button asChild>
-            <Link href="/dashboard/conversations">Voltar</Link>
+            <Link href="/dashboard-shop/conversations">Voltar</Link>
           </Button>
         </div>
       </div>
@@ -206,7 +206,7 @@ export default function ConversationDetailPage({ params }) {
       <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="mb-6 flex items-center gap-3 lg:mb-8 lg:gap-4">
           <Button variant="ghost" size="icon" asChild className="h-9 w-9 hover:bg-purple-50 dark:hover:bg-purple-900/20">
-            <Link href="/dashboard/conversations">
+            <Link href="/dashboard-shop/conversations">
               <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Link>
           </Button>
@@ -218,7 +218,7 @@ export default function ConversationDetailPage({ params }) {
           </div>
         </div>
         <div className="grid gap-4 lg:grid-cols-3 lg:gap-6">
-          {/* Customer Info Sidebar */}
+          
           <div className="lg:col-span-1">
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm lg:sticky lg:top-6">
               <CardHeader className="border-b pb-3 sm:pb-4">
@@ -276,7 +276,7 @@ export default function ConversationDetailPage({ params }) {
 
                     <div>
                       <p className="text-xs font-medium text-muted-foreground sm:text-sm">Criada em</p>
-                      <p className="mt-1 text-xs font-medium sm:text-sm">{formatDate(conversation.created_at)}</p>
+                      <p className="mt-1 text-xs font-medium sm:text-sm" suppressHydrationWarning>{formatDate(conversation.created_at)}</p>
                     </div>
                   </>
                 ) : (
@@ -286,7 +286,7 @@ export default function ConversationDetailPage({ params }) {
             </Card>
           </div>
 
-          {/* Messages */}
+          
           <div className="lg:col-span-2">
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="border-b pb-3 sm:pb-4">
@@ -330,7 +330,7 @@ export default function ConversationDetailPage({ params }) {
                           }
                         >
                           <p className="text-xs leading-relaxed sm:text-sm">{message.content}</p>
-                          <p className="mt-1.5 text-xs text-white/70 sm:mt-2">
+                          <p className="mt-1.5 text-xs text-white/70 sm:mt-2" suppressHydrationWarning>
                             {formatDate(message.created_at)}
                           </p>
                         </div>

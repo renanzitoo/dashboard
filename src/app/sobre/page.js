@@ -3,7 +3,7 @@ export default function SobrePage() {
     <div className="min-h-screen bg-gradient-to-br from-[#D5E5F2] via-[#72C1F2] to-[#4E98D9] dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col">
       <div className="container mx-auto px-6 py-16 flex-1">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
+          
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
               Oxyon AI
@@ -13,7 +13,7 @@ export default function SobrePage() {
             </p>
           </div>
 
-          {/* Story Content */}
+          
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 md:p-12 space-y-8">
             <section>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -100,7 +100,7 @@ export default function SobrePage() {
                 uma solução personalizada para o seu negócio.
               </p>
               
-              {/* WhatsApp Contacts */}
+              
               <div className="grid md:grid-cols-2 gap-4 mb-6">
                 <a
                   href="https://wa.me/5535997446030"
@@ -134,7 +134,7 @@ export default function SobrePage() {
               </div>
               
               <a
-                href="/dashboard"
+                href="/dashboard-service"
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-[#72C1F2] to-[#4E98D9] text-white font-semibold px-8 py-4 rounded-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@ export default function SobrePage() {
             </section>
           </div>
 
-          {/* Footer - Copyright Section */}
+          
           <div className="mt-auto pt-8 pb-4 text-center">
             <p className="text-white/60 text-xs">
               © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.

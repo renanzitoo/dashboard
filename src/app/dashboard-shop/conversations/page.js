@@ -15,7 +15,7 @@ export default function ConversationsPage() {
 
   const loadConversations = useCallback(async () => {
     try {
-      // Busca conversas
+
       const { data: conversationsData, error: convError } = await supabase
         .from('conversations')
         .select('*')
@@ -27,7 +27,6 @@ export default function ConversationsPage() {
 
       setConversations(conversationsData || [])
 
-      // Busca todos os clientes
       const { data: customersData, error: custError } = await supabase
         .from('customers')
         .select('*')
@@ -36,7 +35,6 @@ export default function ConversationsPage() {
         return
       }
 
-      // Cria mapa de clientes para acesso rápido
       const customersMap = {}
       customersData?.forEach(customer => {
         customersMap[customer.id] = customer
@@ -49,13 +47,11 @@ export default function ConversationsPage() {
     }
   }, [supabase])
 
-  // Realtime para conversations
   useRealtimeSubscription({
     table: 'conversations',
     onUpdate: () => loadConversations()
   })
 
-  // Realtime para customers
   useRealtimeSubscription({
     table: 'customers',
     onUpdate: () => loadConversations()
@@ -66,7 +62,6 @@ export default function ConversationsPage() {
       const twentyFourHoursAgo = new Date()
       twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24)
 
-      // Busca conversas abertas há mais de 24 horas
       const { data: oldConversations, error: fetchError } = await supabase
         .from('conversations')
         .select('id, started_at')
@@ -78,7 +73,7 @@ export default function ConversationsPage() {
       }
 
       if (oldConversations && oldConversations.length > 0) {
-        // Atualiza todas as conversas antigas para fechadas
+
         for (const conv of oldConversations) {
           await supabase
             .from('conversations')
@@ -86,7 +81,6 @@ export default function ConversationsPage() {
             .eq('id', conv.id)
         }
 
-        // Recarrega a lista
         loadConversations()
       }
     } catch (error) {
@@ -96,10 +90,8 @@ export default function ConversationsPage() {
   useEffect(() => {
     loadConversations()
 
-    // Verifica conversas antigas imediatamente ao carregar
     closeOldConversations()
-    
-    // Verifica conversas antigas a cada 2 horas
+
     const closeInterval = setInterval(closeOldConversations, 2 * 60 * 60 * 1000)
 
     return () => {
@@ -120,25 +112,34 @@ export default function ConversationsPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">Carregando...</div>
+        <div className="text-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen pb-6 flex flex-col">
-      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8 flex-1">
-        <div className="mb-6 lg:mb-8">
-          <h1 className="text-2xl font-bold sm:text-3xl" style={{color: '#79D0F2'}}>
-            Conversas
-          </h1>
-          <p className="text-xs text-muted-foreground mt-1 sm:text-sm">Acompanhe todas as conversas</p>
+    <div className="space-y-6">
+
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 p-6 text-white shadow-xl">
+        <div className="absolute right-0 top-0 h-full w-1/3 bg-white/10 transform skew-x-12"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <MessageSquare className="h-6 w-6" />
+            </div>
+            <h1 className="text-2xl font-bold sm:text-3xl">Conversas da Loja</h1>
+          </div>
+          <p className="text-white/80">Acompanhe todas as conversas</p>
         </div>
-        <div className="mb-4 flex items-center justify-between sm:mb-6">
-          <h2 className="text-xl font-bold sm:text-2xl">
-            {conversations.length} {conversations.length === 1 ? 'conversa' : 'conversas'}
-          </h2>
-        </div>
+      </div>
+      <div className="mb-6 lg:mb-8">
+        <h2 className="text-xl font-bold sm:text-2xl">
+          {conversations.length} {conversations.length === 1 ? 'conversa' : 'conversas'}
+        </h2>
+      </div>
 
         {conversations.length === 0 ? (
           <Card className="border-0 shadow-lg">
@@ -152,7 +153,7 @@ export default function ConversationsPage() {
               const customer = customers[conversation.customer_id]
               
               return (
-                <Link key={conversation.id} href={`/dashboard/conversations/${conversation.id}`}>
+                <Link key={conversation.id} href={`/dashboard-shop/conversations/${conversation.id}`}>
                   <Card className="group cursor-pointer border-0 bg-card/70 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
                     <CardContent className="p-4 sm:p-6">
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -167,7 +168,7 @@ export default function ConversationsPage() {
                                 {customer?.name || 'Cliente não encontrado'}
                               </span>
                             </div>
-                            <p className="text-xs text-muted-foreground sm:text-sm">
+                            <p className="text-xs text-muted-foreground sm:text-sm" suppressHydrationWarning>
                               {formatDate(conversation.started_at)}
                             </p>
                           </div>
@@ -199,15 +200,11 @@ export default function ConversationsPage() {
             })}
           </div>
         )}
-      </main>
-      
-      {/* Footer - Copyright Section */}
-      <footer className="mt-auto py-4">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs text-muted-foreground/60">
-            © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
-          </p>
-        </div>
+
+      <footer className="pt-4 pb-2 text-center">
+        <p className="text-xs text-muted-foreground/60">
+          © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
+        </p>
       </footer>
     </div>
   )

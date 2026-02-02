@@ -88,7 +88,7 @@ export default function AppointmentDetailPage({ params }) {
       
       // Aguarda 1 segundo e volta para a lista
       setTimeout(() => {
-        router.push('/dashboard/appointments')
+        router.push('/dashboard-service/appointments')
       }, 1500)
     } catch (err) {
       alert(`Erro inesperado: ${err.message}`)
@@ -152,7 +152,7 @@ export default function AppointmentDetailPage({ params }) {
         <div className="text-center">
           <p className="mb-4 text-lg">Agendamento não encontrado</p>
           <Button asChild>
-            <Link href="/dashboard/appointments">Voltar</Link>
+            <Link href="/dashboard-service/appointments">Voltar</Link>
           </Button>
         </div>
       </div>
@@ -164,7 +164,7 @@ export default function AppointmentDetailPage({ params }) {
       <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <div className="mb-6 flex items-center gap-3 lg:mb-8 lg:gap-4">
           <Button variant="ghost" size="icon" asChild className="h-9 w-9 hover:bg-accent">
-            <Link href="/dashboard/appointments">
+            <Link href="/dashboard-service/appointments">
               <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
             </Link>
           </Button>
@@ -177,7 +177,7 @@ export default function AppointmentDetailPage({ params }) {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3 lg:gap-6">
-          {/* Informações do Cliente */}
+          
           <div className="lg:col-span-1">
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm lg:sticky lg:top-6">
               <CardHeader className="border-b pb-3 sm:pb-4">
@@ -223,9 +223,9 @@ export default function AppointmentDetailPage({ params }) {
             </Card>
           </div>
 
-          {/* Detalhes do Agendamento */}
+          
           <div className="lg:col-span-2 space-y-4 lg:space-y-6">
-            {/* Informações */}
+            
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="border-b pb-3 sm:pb-4">
                 <CardTitle className="text-base sm:text-lg">Informações do Agendamento</CardTitle>
@@ -235,7 +235,7 @@ export default function AppointmentDetailPage({ params }) {
                   <Calendar className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" style={{color: '#72C1F2'}} />
                   <div>
                     <p className="text-xs text-muted-foreground sm:text-sm">Data</p>
-                    <p className="font-semibold text-base sm:text-lg">{formatDate(appointment.start_time)}</p>
+                    <p className="font-semibold text-base sm:text-lg" suppressHydrationWarning>{formatDate(appointment.start_time)}</p>
                   </div>
                 </div>
 
@@ -243,7 +243,7 @@ export default function AppointmentDetailPage({ params }) {
                   <Clock className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" style={{color: '#79D0F2'}} />
                   <div>
                     <p className="text-xs text-muted-foreground sm:text-sm">Horário</p>
-                    <p className="font-semibold text-base sm:text-lg">
+                    <p className="font-semibold text-base sm:text-lg" suppressHydrationWarning>
                       {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
                     </p>
                   </div>
@@ -261,7 +261,7 @@ export default function AppointmentDetailPage({ params }) {
               </CardContent>
             </Card>
 
-            {/* Ações */}
+            
             <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
               <CardHeader className="border-b pb-3 sm:pb-4">
                 <CardTitle className="text-base sm:text-lg">Ações</CardTitle>

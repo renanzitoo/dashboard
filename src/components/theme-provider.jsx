@@ -31,7 +31,6 @@ export function ThemeProvider({ children }) {
   }, [theme])
 
   useEffect(() => {
-    // Sincronizar tema entre abas
     const handleStorageChange = (e) => {
       if (e.key === 'theme' && e.newValue) {
         setTheme(e.newValue)
@@ -46,8 +45,6 @@ export function ThemeProvider({ children }) {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
-    
-    // Disparar evento customizado para atualizar a aba atual também
     window.dispatchEvent(new StorageEvent('storage', {
       key: 'theme',
       newValue: newTheme,

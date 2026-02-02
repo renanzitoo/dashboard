@@ -27,10 +27,6 @@ export async function updateSession(request) {
     }
   )
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
   const {
     data: { user },
   } = await supabase.auth.getUser()
@@ -42,24 +38,67 @@ export async function updateSession(request) {
     !request.nextUrl.pathname.startsWith('/api/webhook') &&
     !request.nextUrl.pathname.startsWith('/sobre')
   ) {
-    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
-  // creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+  if (user && request.nextUrl.pathname === '/') {
+    try {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('bot_type')
+        .eq('id', user.id)
+        .single()
+
+      const url = request.nextUrl.clone()
+      if (userData?.bot_type === 'shop') {
+        url.pathname = '/dashboard-shop'
+        return NextResponse.redirect(url)
+      } else {
+        url.pathname = '/dashboard-service'
+        return NextResponse.redirect(url)
+      }
+    } catch (error) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/dashboard-service'
+      return NextResponse.redirect(url)
+    }
+  }
+
+  if (user && request.nextUrl.pathname.startsWith('/dashboard-service')) {
+    try {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('bot_type')
+        .eq('id', user.id)
+        .single()
+
+      if (userData?.bot_type === 'shop') {
+        const url = request.nextUrl.clone()
+        url.pathname = '/dashboard-shop'
+        return NextResponse.redirect(url)
+      }
+    } catch (error) {
+    }
+  }
+
+  if (user && request.nextUrl.pathname.startsWith('/dashboard-shop')) {
+    try {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('bot_type')
+        .eq('id', user.id)
+        .single()
+
+      if (userData?.bot_type === 'atendant' || !userData?.bot_type) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/dashboard-service'
+        return NextResponse.redirect(url)
+      }
+    } catch (error) {
+    }
+  }
 
   return supabaseResponse
 }

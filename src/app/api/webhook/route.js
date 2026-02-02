@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server'
 
-// Cache simples para notificar mudanças
 const changes = new Map()
 
 export async function POST(request) {
   try {
     const payload = await request.json()
-    
-    // Tentar extrair o nome da tabela de diferentes campos possíveis
+
     const table = payload.table || 
                   payload.table_name || 
                   payload.schema?.table || 
@@ -16,15 +14,13 @@ export async function POST(request) {
     
     const type = payload.type || payload.operation || payload.event || 'unknown'
     const timestamp = Date.now()
-    
-    // Armazena a mudança
+
     changes.set(table, {
       timestamp,
       type,
       data: payload.record || payload.new || payload
     })
-    
-    // Também armazena um "all" para forçar atualização geral
+
     changes.set('_all', { timestamp, type, table })
     
     return NextResponse.json({ 
@@ -41,7 +37,6 @@ export async function POST(request) {
   }
 }
 
-// GET para verificar se houve mudanças
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
   const table = searchParams.get('table')

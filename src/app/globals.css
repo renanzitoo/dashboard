@@ -147,3 +147,35 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
+
+/* Dashboard Atendimentos - Layout e espaçamento */
+@layer base {
+  .main-content-appointments {
+    margin-left: 0;
+    padding: 72px 16px 16px 16px;
+    min-height: 100vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-content-appointments {
+    margin-left: 256px !important;
+    padding: 24px !important;
+  }
+}
+
+/* Dashboard Loja - Layout e espaçamento */
+@layer base {
+  .main-content-shop {
+    margin-left: 0;
+    padding: 72px 16px 16px 16px;
+    min-height: 100vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-content-shop {
+    margin-left: 256px !important;
+    padding: 24px !important;
+  }
+}

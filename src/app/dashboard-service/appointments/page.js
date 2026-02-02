@@ -27,8 +27,7 @@ export default function AppointmentsPage() {
       let query = supabase
         .from('appointments')
         .select('id, start_time, end_time, status, customer_id, created_at')
-      
-      // Aplica filtro de data apenas se não for para mostrar passados
+
       if (!showPast) {
         query = query.gte('start_time', today.toISOString())
       }
@@ -42,13 +41,12 @@ export default function AppointmentsPage() {
       setItems(data || [])
       setFilteredItems(data || [])
 
-      // Busca todos os clientes
       const { data: customersData, error: custError } = await supabase
         .from('customers')
         .select('*')
 
       if (!custError && customersData) {
-        // Cria mapa de clientes para acesso rápido
+
         const customersMap = {}
         customersData.forEach(customer => {
           customersMap[customer.id] = customer
@@ -61,13 +59,11 @@ export default function AppointmentsPage() {
     }
   }, [supabase])
 
-  // Realtime para appointments
   useRealtimeSubscription({
     table: 'appointments',
     onUpdate: () => loadAppointments()
   })
 
-  // Realtime para customers
   useRealtimeSubscription({
     table: 'customers',
     onUpdate: () => loadAppointments()
@@ -77,7 +73,6 @@ export default function AppointmentsPage() {
     loadAppointments()
   }, [loadAppointments])
 
-  // Recarrega quando showPast muda
   useEffect(() => {
     loadAppointments()
   }, [showPast, loadAppointments])
@@ -143,22 +138,31 @@ export default function AppointmentsPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-lg">Carregando...</div>
+        <div className="text-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen pb-6 flex flex-col">
-      <main className="container mx-auto px-4 py-6 sm:px-6 lg:px-8 lg:py-8 flex-1">
-        <div className="mb-6 lg:mb-8">
-          <h1 className="text-2xl font-bold sm:text-3xl" style={{color: '#72C1F2'}}>
-            Agendamentos
-          </h1>
-          <p className="text-xs text-muted-foreground mt-1 sm:text-sm">Gerencie todos os agendamentos</p>
+    <div className="space-y-6">
+
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 p-6 text-white shadow-xl">
+        <div className="absolute right-0 top-0 h-full w-1/3 bg-white/10 transform skew-x-12"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+              <Calendar className="h-6 w-6" />
+            </div>
+            <h1 className="text-2xl font-bold sm:text-3xl">Agendamentos</h1>
+          </div>
+          <p className="text-white/80">Gerencie todos os agendamentos</p>
         </div>
-        {/* Filters */}
-        <Card className="mb-6 border-0 bg-card/70 shadow-lg backdrop-blur-sm lg:mb-8">
+      </div>
+
+        <Card className="border-0 bg-card/70 shadow-lg backdrop-blur-sm">
           <CardHeader className="pb-3 sm:pb-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <CardTitle className="text-base font-semibold sm:text-lg">Filtros</CardTitle>
@@ -166,7 +170,7 @@ export default function AppointmentsPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Radio buttons para mostrar/ocultar passados */}
+
             <div className="space-y-2">
               <label className="text-xs font-medium sm:text-sm">Período</label>
               <div className="flex gap-4">
@@ -235,8 +239,6 @@ export default function AppointmentsPage() {
           </CardContent>
         </Card>
 
-        {/* Results */}
-        {/* Results */}
         {filteredItems.length === 0 ? (
           <Card className="border-0 shadow-lg">
             <CardContent className="flex min-h-[200px] items-center justify-center">
@@ -249,7 +251,7 @@ export default function AppointmentsPage() {
               const customer = customers[appointment.customer_id]
               
               return (
-              <Link key={appointment.id} href={`/dashboard/appointments/${appointment.id}`}>
+              <Link key={appointment.id} href={`/dashboard-service/appointments/${appointment.id}`}>
               <Card className="group cursor-pointer border-0 bg-card/70 shadow-lg backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-xl">
                 <CardContent className="flex flex-col gap-4 p-4 sm:p-6 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex flex-1 items-start gap-3 sm:gap-4">
@@ -263,11 +265,11 @@ export default function AppointmentsPage() {
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" style={{color: '#72C1F2'}} />
-                        <span className="font-medium text-sm sm:text-base">{formatDate(appointment.start_time)}</span>
+                        <span className="font-medium text-sm sm:text-base" suppressHydrationWarning>{formatDate(appointment.start_time)}</span>
                       </div>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
                         <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" style={{color: '#79D0F2'}} />
-                        <span>
+                        <span suppressHydrationWarning>
                           {formatTime(appointment.start_time)} - {formatTime(appointment.end_time)}
                         </span>
                       </div>
@@ -289,15 +291,11 @@ export default function AppointmentsPage() {
             })}
           </div>
         )}
-      </main>
-      
-      {/* Footer - Copyright Section */}
-      <footer className="mt-auto py-4">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs text-muted-foreground/60">
-            © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
-          </p>
-        </div>
+
+      <footer className="pt-4 pb-2 text-center">
+        <p className="text-xs text-muted-foreground/60">
+          © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
+        </p>
       </footer>
     </div>
   )

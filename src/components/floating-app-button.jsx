@@ -16,7 +16,7 @@ export function FloatingAppButton() {
       }}
       aria-label="Ícone da aplicação"
     >
-      {/* Ícone da aplicação */}
+      
       <div className="relative w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-300 group-hover:rotate-12">
         <Image
           src="/icon.png"
@@ -28,7 +28,7 @@ export function FloatingAppButton() {
         />
       </div>
 
-      {/* Ripple effect quando hover */}
+      
       {isHovered && (
         <span className="absolute inset-0 rounded-full bg-blue-500 opacity-10 animate-ping" />
       )}

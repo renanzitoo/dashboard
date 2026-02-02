@@ -1,4 +1,4 @@
-// Hook para escutar mudanças via Supabase Realtime (WebSocket)
+
 import { useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
@@ -6,14 +6,13 @@ export function useRealtimeSubscription({ table, onUpdate, event = '*' }) {
   const supabaseRef = useRef(null)
   
   useEffect(() => {
-    // Reutiliza a mesma instância do client
+
     if (!supabaseRef.current) {
       supabaseRef.current = createClient()
     }
     
     const supabase = supabaseRef.current
-    
-    // Subscreve aos eventos da tabela via WebSocket
+
     const channel = supabase
       .channel(`${table}-changes-${Date.now()}`) // ID único para evitar conflitos
       .on(
@@ -24,18 +23,58 @@ export function useRealtimeSubscription({ table, onUpdate, event = '*' }) {
           table: table
         },
         (payload) => {
-          console.log(`[Realtime] ${table}:`, payload.eventType, payload)
           onUpdate(payload)
         }
       )
       .subscribe((status) => {
-        console.log(`[Realtime] ${table} status:`, status)
+        if (status === 'SUBSCRIPTION_ERROR') {
+        }
       })
 
-    // Cleanup: remove a subscrição quando o componente desmontar
     return () => {
-      console.log(`[Realtime] Unsubscribing from ${table}`)
       supabase.removeChannel(channel)
     }
   }, [table, event]) // Removido onUpdate das dependências
+}
+
+export function useWebhookPolling({ tables = [], onUpdate, interval = 2000 }) {
+  const lastCheckRef = useRef({})
+  
+  useEffect(() => {
+
+    tables.forEach(table => {
+      if (!lastCheckRef.current[table]) {
+        lastCheckRef.current[table] = Date.now()
+      }
+    })
+    
+    const checkWebhooks = async () => {
+      try {
+        let hasChanges = false
+        
+        for (const table of tables) {
+          const response = await fetch(`/api/webhook?table=${table}&since=${lastCheckRef.current[table]}`)
+          const data = await response.json()
+          
+          if (data.hasChanges) {
+            lastCheckRef.current[table] = data.timestamp
+            hasChanges = true
+          }
+        }
+        
+        if (hasChanges && onUpdate) {
+          onUpdate()
+        }
+      } catch (error) {
+      }
+    }
+
+    checkWebhooks()
+
+    const intervalId = setInterval(checkWebhooks, interval)
+    
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [tables, onUpdate, interval])
 }

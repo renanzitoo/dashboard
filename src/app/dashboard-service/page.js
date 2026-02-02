@@ -57,9 +57,21 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    loadStats()
-    const interval = setInterval(loadStats, 5000)
-    return () => clearInterval(interval)
+    let mounted = true
+    
+    const fetchStats = async () => {
+      if (mounted) {
+        await loadStats()
+      }
+    }
+    
+    fetchStats()
+    const interval = setInterval(fetchStats, 5000)
+    
+    return () => {
+      mounted = false
+      clearInterval(interval)
+    }
   }, [])
 
   if (loading) {
@@ -75,7 +87,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header com gradiente */}
+
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-cyan-500 to-sky-500 p-6 text-white shadow-xl">
         <div className="absolute right-0 top-0 h-full w-1/3 bg-white/10 transform skew-x-12"></div>
         <div className="relative z-10">
@@ -89,7 +101,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Cards de estatísticas principais */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-0 bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-lg hover:shadow-xl transition-shadow">
           <CardContent className="p-5">
@@ -152,7 +163,6 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Acesso Rápido */}
       <Card className="border-0 bg-card/80 shadow-lg backdrop-blur-sm">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
@@ -164,7 +174,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href="/dashboard/appointments" className="group">
+            <Link href="/dashboard-service/appointments" className="group">
               <div className="flex items-center justify-between p-4 rounded-xl border border-border/50 bg-background/50 transition-all hover:border-blue-500/50 hover:bg-blue-500/5 hover:shadow-md">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 group-hover:bg-blue-500 group-hover:text-white transition-colors">
@@ -179,7 +189,7 @@ export default function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/dashboard/customers" className="group">
+            <Link href="/dashboard-service/customers" className="group">
               <div className="flex items-center justify-between p-4 rounded-xl border border-border/50 bg-background/50 transition-all hover:border-indigo-500/50 hover:bg-indigo-500/5 hover:shadow-md">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
@@ -194,7 +204,7 @@ export default function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/dashboard/conversations" className="group">
+            <Link href="/dashboard-service/conversations" className="group">
               <div className="flex items-center justify-between p-4 rounded-xl border border-border/50 bg-background/50 transition-all hover:border-violet-500/50 hover:bg-violet-500/5 hover:shadow-md">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-violet-500/10 text-violet-600 group-hover:bg-violet-500 group-hover:text-white transition-colors">
@@ -212,7 +222,6 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Status dos Agendamentos */}
       <div className="grid gap-4 sm:grid-cols-2">
         <Card className="border-0 bg-card/80 shadow-lg backdrop-blur-sm">
           <CardHeader className="pb-3">
@@ -246,7 +255,7 @@ export default function DashboardPage() {
             )}
             {stats.appointmentsToday > 0 && (
               <Link 
-                href="/dashboard/appointments?date=today"
+                href="/dashboard-service/appointments?date=today"
                 className="mt-4 flex items-center gap-2 text-sm text-cyan-600 hover:text-cyan-700 transition-colors"
               >
                 Ver agendamentos de hoje
@@ -288,7 +297,7 @@ export default function DashboardPage() {
             )}
             {stats.appointmentsPending > 0 && (
               <Link 
-                href="/dashboard/appointments?status=pending"
+                href="/dashboard-service/appointments?status=pending"
                 className="mt-4 flex items-center gap-2 text-sm text-yellow-600 hover:text-yellow-700 transition-colors"
               >
                 Ver pendentes
@@ -299,7 +308,6 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Footer */}
       <footer className="pt-4 pb-2 text-center">
         <p className="text-xs text-muted-foreground/60">
           © {new Date().getFullYear()} Oxyon AI. Todos os direitos reservados.
